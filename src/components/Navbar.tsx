@@ -7,11 +7,13 @@ import { useWishlist } from "@/contexts/WishlistContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import { cn } from "@/lib/utils";
 import { searchProducts } from "@/data/products";
+import { CartDrawer } from "@/components/CartDrawer";
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<ReturnType<typeof searchProducts>>([]);
   const { totalItems } = useCart();
@@ -49,21 +51,41 @@ export function Navbar() {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "/" && !isSearchOpen && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement)) {
+      if (
+        e.key === "/" &&
+        !isSearchOpen &&
+        !isCartOpen &&
+        !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement)
+      ) {
         e.preventDefault();
         setIsSearchOpen(true);
       }
-      if (e.key === "Escape") setIsSearchOpen(false);
+      if (e.key === "Escape") {
+        setIsSearchOpen(false);
+        setIsCartOpen(false);
+      }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isSearchOpen]);
+  }, [isSearchOpen, isCartOpen]);
+
+  // Lock body scroll when cart is open
+  useEffect(() => {
+    if (isCartOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isCartOpen]);
 
   const navLinks = [
-    { href: "/", label: "Home" },
     { href: "/shop", label: "Shop" },
+    { href: "/shop?category=new-arrivals", label: "Collections" },
     { href: "/shop?category=new-arrivals", label: "New Arrivals" },
-    { href: "/orders", label: "Orders" },
+    { href: "/shop?category=bestseller", label: "Sale" },
   ];
 
   return (
@@ -72,7 +94,7 @@ export function Navbar() {
         className={cn(
           "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
           isScrolled
-            ? "bg-background/85 backdrop-blur-xl border-b border-border/40"
+            ? "bg-background/85 backdrop-blur-xl border-b border-border/30"
             : "bg-transparent"
         )}
       >
@@ -80,7 +102,7 @@ export function Navbar() {
           <div className="flex h-[60px] items-center justify-between">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2">
-              <span className="text-lg font-serif font-bold tracking-[0.08em] text-foreground">
+              <span className="text-lg font-serif font-bold tracking-[0.1em] text-foreground">
                 LUMA
               </span>
             </Link>
@@ -89,23 +111,17 @@ export function Navbar() {
             <div className="hidden md:flex items-center gap-7">
               {navLinks.map((link) => (
                 <Link
-                  key={link.href}
+                  key={link.label}
                   to={link.href}
                   className={cn(
                     "text-[13px] tracking-wide transition-colors duration-200 relative py-1",
-                    location.pathname === link.href
+                    location.pathname === link.href &&
+                      link.label === "Shop"
                       ? "text-foreground font-medium"
-                      : "text-muted-foreground/70 hover:text-foreground"
+                      : "text-muted-foreground/60 hover:text-foreground"
                   )}
                 >
                   {link.label}
-                  {location.pathname === link.href && (
-                    <motion.div
-                      layoutId="nav-indicator"
-                      className="absolute -bottom-0.5 left-0 right-0 h-px bg-foreground"
-                      transition={{ duration: 0.25, ease: "easeOut" }}
-                    />
-                  )}
                 </Link>
               ))}
             </div>
@@ -114,7 +130,7 @@ export function Navbar() {
             <div className="flex items-center gap-0.5">
               <button
                 onClick={() => setIsSearchOpen(true)}
-                className="relative p-2.5 text-muted-foreground/70 hover:text-foreground transition-colors"
+                className="relative p-2.5 text-muted-foreground/60 hover:text-foreground transition-colors"
                 aria-label="Search"
               >
                 <Search className="h-[18px] w-[18px]" strokeWidth={1.5} />
@@ -122,7 +138,7 @@ export function Navbar() {
 
               <button
                 onClick={toggleTheme}
-                className="relative p-2.5 text-muted-foreground/70 hover:text-foreground transition-colors"
+                className="relative p-2.5 text-muted-foreground/60 hover:text-foreground transition-colors"
                 aria-label="Toggle theme"
               >
                 {isDark ? (
@@ -134,33 +150,33 @@ export function Navbar() {
 
               <Link
                 to="/wishlist"
-                className="relative p-2.5 text-muted-foreground/70 hover:text-foreground transition-colors"
+                className="relative p-2.5 text-muted-foreground/60 hover:text-foreground transition-colors"
                 aria-label="Wishlist"
               >
                 <Heart className="h-[18px] w-[18px]" strokeWidth={1.5} />
                 {wishlistItems.length > 0 && (
-                  <span className="absolute top-1.5 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-foreground text-[9px] font-semibold text-background">
+                  <span className="absolute top-1.5 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-amber-500 text-[9px] font-bold text-black">
                     {wishlistItems.length}
                   </span>
                 )}
               </Link>
 
-              <Link
-                to="/cart"
-                className="relative p-2.5 text-muted-foreground/70 hover:text-foreground transition-colors"
-                aria-label="Cart"
+              <button
+                onClick={() => setIsCartOpen(true)}
+                className="relative p-2.5 text-muted-foreground/60 hover:text-foreground transition-colors"
+                aria-label="Open cart"
               >
                 <ShoppingBag className="h-[18px] w-[18px]" strokeWidth={1.5} />
                 {totalItems > 0 && (
-                  <span className="absolute top-1.5 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-foreground text-[9px] font-semibold text-background">
+                  <span className="absolute top-1.5 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-amber-500 text-[9px] font-bold text-black">
                     {totalItems}
                   </span>
                 )}
-              </Link>
+              </button>
 
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="md:hidden p-2.5 text-muted-foreground/70 hover:text-foreground transition-colors"
+                className="md:hidden p-2.5 text-muted-foreground/60 hover:text-foreground transition-colors"
                 aria-label="Menu"
               >
                 {isMobileMenuOpen ? (
@@ -181,18 +197,18 @@ export function Navbar() {
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.2 }}
-              className="md:hidden bg-background/95 backdrop-blur-xl border-b border-border/40"
+              className="md:hidden bg-background/95 backdrop-blur-xl border-b border-border/30"
             >
               <div className="px-5 py-5 space-y-0.5">
                 {navLinks.map((link) => (
                   <Link
-                    key={link.href}
+                    key={link.label}
                     to={link.href}
                     className={cn(
-                      "block py-3 text-[15px] transition-colors border-b border-border/30 last:border-0",
+                      "block py-3 text-[15px] transition-colors border-b border-border/20 last:border-0",
                       location.pathname === link.href
                         ? "text-foreground font-medium"
-                        : "text-muted-foreground/70 hover:text-foreground"
+                        : "text-muted-foreground/60 hover:text-foreground"
                     )}
                   >
                     {link.label}
@@ -204,7 +220,10 @@ export function Navbar() {
         </AnimatePresence>
       </header>
 
-      {/* ─── Search Overlay ──────────────────────────────────────────────── */}
+      {/* Cart Drawer */}
+      <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+
+      {/* Search Overlay */}
       <AnimatePresence>
         {isSearchOpen && (
           <motion.div
@@ -227,22 +246,22 @@ export function Navbar() {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="relative">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground/50" strokeWidth={1.5} />
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground/40" strokeWidth={1.5} />
                 <input
                   ref={searchInputRef}
                   type="text"
                   placeholder="Search for products..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full h-14 pl-12 pr-16 bg-card border border-border/60 rounded-2xl text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-border text-[15px] transition-colors"
+                  className="w-full h-14 pl-12 pr-16 bg-card border border-border/50 rounded-2xl text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-border text-[15px] transition-colors"
                 />
-                <kbd className="absolute right-4 top-1/2 -translate-y-1/2 hidden sm:inline-flex items-center gap-0.5 rounded-md border border-border/50 bg-muted/50 px-2 py-0.5 text-[11px] text-muted-foreground/60 font-mono">
+                <kbd className="absolute right-4 top-1/2 -translate-y-1/2 hidden sm:inline-flex items-center gap-0.5 rounded-md border border-border/40 bg-muted/40 px-2 py-0.5 text-[11px] text-muted-foreground/50 font-mono">
                   ESC
                 </kbd>
               </div>
 
               {searchResults.length > 0 && (
-                <div className="mt-3 bg-card border border-border/50 rounded-2xl overflow-hidden shadow-xl shadow-black/10">
+                <div className="mt-3 bg-card border border-border/40 rounded-2xl overflow-hidden shadow-xl shadow-black/10">
                   {searchResults.map((product) => (
                     <button
                       key={product.id}
@@ -251,9 +270,9 @@ export function Navbar() {
                         setIsSearchOpen(false);
                         setSearchQuery("");
                       }}
-                      className="w-full flex items-center gap-4 p-4 hover:bg-muted/30 transition-colors text-left border-b border-border/20 last:border-0"
+                      className="w-full flex items-center gap-4 p-4 hover:bg-muted/20 transition-colors text-left border-b border-border/15 last:border-0"
                     >
-                      <div className="w-12 h-12 rounded-xl bg-muted/50 flex-shrink-0 overflow-hidden">
+                      <div className="w-12 h-12 rounded-xl bg-muted/30 flex-shrink-0 overflow-hidden">
                         <img
                           src={product.images[0]}
                           alt={product.name}
@@ -261,13 +280,13 @@ export function Navbar() {
                         />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-[10px] text-muted-foreground/60 tracking-[0.15em] uppercase font-medium">
+                        <p className="text-[10px] text-muted-foreground/50 tracking-[0.15em] uppercase font-medium">
                           {product.brand}
                         </p>
                         <p className="text-[13px] font-medium text-foreground truncate">
                           {product.name}
                         </p>
-                        <p className="text-[13px] text-muted-foreground/70">
+                        <p className="text-[13px] text-muted-foreground/60">
                           ${product.price}
                         </p>
                       </div>
@@ -277,16 +296,16 @@ export function Navbar() {
               )}
 
               {searchQuery.length >= 2 && searchResults.length === 0 && (
-                <div className="mt-3 bg-card border border-border/50 rounded-2xl p-10 text-center">
-                  <p className="text-[14px] text-muted-foreground/70">
+                <div className="mt-3 bg-card border border-border/40 rounded-2xl p-10 text-center">
+                  <p className="text-[14px] text-muted-foreground/60">
                     No products found for &ldquo;{searchQuery}&rdquo;
                   </p>
                 </div>
               )}
 
               {searchQuery.length < 2 && (
-                <div className="mt-3 bg-card border border-border/50 rounded-2xl p-5">
-                  <p className="text-[10px] text-muted-foreground/60 uppercase tracking-[0.2em] font-medium mb-3">
+                <div className="mt-3 bg-card border border-border/40 rounded-2xl p-5">
+                  <p className="text-[10px] text-muted-foreground/50 uppercase tracking-[0.2em] font-medium mb-3">
                     Popular searches
                   </p>
                   <div className="flex flex-wrap gap-2">
@@ -295,7 +314,7 @@ export function Navbar() {
                         <button
                           key={term}
                           onClick={() => setSearchQuery(term)}
-                          className="px-3.5 py-1.5 text-[12px] bg-muted/40 rounded-full text-muted-foreground/80 hover:text-foreground hover:bg-muted/60 transition-colors font-medium"
+                          className="px-3.5 py-1.5 text-[12px] bg-muted/30 rounded-full text-muted-foreground/70 hover:text-foreground hover:bg-muted/50 transition-colors font-medium"
                         >
                           {term}
                         </button>

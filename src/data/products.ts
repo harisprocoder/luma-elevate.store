@@ -1,3 +1,14 @@
+import {
+  sneakerImage,
+  hoodieImage,
+  tshirtImage,
+  watchImage,
+  bagImage,
+  glassesImage,
+  jacketImage,
+  createCategoryImage,
+} from "@/lib/productImages";
+
 export interface Product {
   id: string;
   name: string;
@@ -27,129 +38,7 @@ export interface Category {
   productCount: number;
 }
 
-// Premium product imagery — high contrast, editorial studio feel
-function createProductImage(
-  bg1: string,
-  bg2: string,
-  fg: string,
-  shape: string,
-  label: string
-): string {
-  return `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="600" height="750" viewBox="0 0 600 750">
-  <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="${bg1}"/>
-      <stop offset="100%" stop-color="${bg2}"/>
-    </linearGradient>
-    <radialGradient id="glow" cx="50%" cy="40%" r="50%">
-      <stop offset="0%" stop-color="${fg}" stop-opacity="0.06"/>
-      <stop offset="100%" stop-color="${fg}" stop-opacity="0"/>
-    </radialGradient>
-    <filter id="ds">
-      <feDropShadow dx="0" dy="12" stdDeviation="24" flood-color="#000" flood-opacity="0.35"/>
-    </filter>
-    <filter id="soft">
-      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.2"/>
-    </filter>
-  </defs>
-  <rect width="600" height="750" fill="url(#bg)"/>
-  <rect width="600" height="750" fill="url(#glow)"/>
-  ${shape}
-  <text x="300" y="680" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="13" fill="${fg}" opacity="0.35" letter-spacing="4">${label}</text>
-</svg>`)}`;
-}
 
-function createCategoryImage(
-  bg1: string,
-  bg2: string,
-  accentColor: string,
-  iconText: string,
-  subtext: string
-): string {
-  return `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
-  <defs>
-    <linearGradient id="cbg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="${bg1}"/>
-      <stop offset="100%" stop-color="${bg2}"/>
-    </linearGradient>
-    <radialGradient id="cglow" cx="50%" cy="45%" r="45%">
-      <stop offset="0%" stop-color="${accentColor}" stop-opacity="0.12"/>
-      <stop offset="100%" stop-color="${accentColor}" stop-opacity="0"/>
-    </radialGradient>
-  </defs>
-  <rect width="800" height="600" fill="url(#cbg)"/>
-  <rect width="800" height="600" fill="url(#cglow)"/>
-  <text x="400" y="260" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="80" fill="${accentColor}" opacity="0.7">${iconText}</text>
-  <text x="400" y="340" text-anchor="middle" font-family="Inter,Helvetica,Arial,sans-serif" font-size="14" fill="${accentColor}" opacity="0.4" letter-spacing="3">${subtext}</text>
-</svg>`)}`;
-}
-
-// ─── Product Silhouette Shapes ─────────────────────────────────────────────
-// Each shape uses bright fills/strokes against the lighter background
-
-const tshirtShape = `
-  <g filter="url(#ds)" transform="translate(300,340)">
-    <path d="M-120,-140 L-60,-170 Q0,-185 60,-170 L120,-140 L160,-80 L120,-60 L90,-80 L90,140 L-90,140 L-90,-80 L-120,-60 Z" fill="${"{fg}"}" fill-opacity="0.12" stroke="${"{fg}"}" stroke-opacity="0.35" stroke-width="2"/>
-    <path d="M-80,-140 Q0,-160 80,-140" fill="none" stroke="${"{fg}"}" stroke-opacity="0.2" stroke-width="1.5"/>
-    <ellipse cx="0" cy="-130" rx="35" ry="12" fill="none" stroke="${"{fg}"}" stroke-opacity="0.25" stroke-width="1.5"/>
-  </g>`;
-
-const shoeShape = `
-  <g filter="url(#ds)" transform="translate(300,380)">
-    <path d="M-160,20 Q-140,-60 -40,-80 Q60,-100 120,-60 Q160,-20 170,20 Q180,60 140,70 L-120,70 Q-180,70 -180,40 Z" fill="${"{fg}"}" fill-opacity="0.12" stroke="${"{fg}"}" stroke-opacity="0.35" stroke-width="2"/>
-    <path d="M-120,20 Q0,0 140,20" fill="none" stroke="${"{fg}"}" stroke-opacity="0.15" stroke-width="1"/>
-    <ellipse cx="60" cy="-60" rx="20" ry="15" fill="${"{fg}"}" fill-opacity="0.08"/>
-  </g>`;
-
-const watchShape = `
-  <g filter="url(#ds)" transform="translate(300,360)">
-    <rect x="-16" y="-160" width="32" height="60" rx="6" fill="${"{fg}"}" fill-opacity="0.08" stroke="${"{fg}"}" stroke-opacity="0.15" stroke-width="1"/>
-    <rect x="-16" y="100" width="32" height="60" rx="6" fill="${"{fg}"}" fill-opacity="0.08" stroke="${"{fg}"}" stroke-opacity="0.15" stroke-width="1"/>
-    <circle cx="0" cy="0" r="95" fill="${"{fg}"}" fill-opacity="0.08" stroke="${"{fg}"}" stroke-opacity="0.35" stroke-width="2.5"/>
-    <circle cx="0" cy="0" r="82" fill="none" stroke="${"{fg}"}" stroke-opacity="0.15" stroke-width="1"/>
-    <line x1="0" y1="-70" x2="0" y2="0" stroke="${"{fg}"}" stroke-opacity="0.4" stroke-width="2.5" stroke-linecap="round"/>
-    <line x1="0" y1="0" x2="45" y2="0" stroke="${"{fg}"}" stroke-opacity="0.3" stroke-width="2" stroke-linecap="round"/>
-    <circle cx="0" cy="0" r="4" fill="${"{fg}"}" fill-opacity="0.4"/>
-  </g>`;
-
-const bagShape = `
-  <g filter="url(#ds)" transform="translate(300,370)">
-    <rect x="-100" y="-80" width="200" height="180" rx="10" fill="${"{fg}"}" fill-opacity="0.1" stroke="${"{fg}"}" stroke-opacity="0.35" stroke-width="2"/>
-    <path d="M-50,-80 Q-50,-140 0,-160 Q50,-140 50,-80" fill="none" stroke="${"{fg}"}" stroke-opacity="0.3" stroke-width="2.5"/>
-    <line x1="-40" y1="-10" x2="40" y2="-10" stroke="${"{fg}"}" stroke-opacity="0.12" stroke-width="1"/>
-    <rect x="-80" y="30" width="160" height="60" rx="4" fill="${"{fg}"}" fill-opacity="0.04"/>
-  </g>`;
-
-const glassesShape = `
-  <g filter="url(#ds)" transform="translate(300,350)">
-    <ellipse cx="-70" cy="0" rx="60" ry="48" fill="${"{fg}"}" fill-opacity="0.08" stroke="${"{fg}"}" stroke-opacity="0.35" stroke-width="2.5"/>
-    <ellipse cx="70" cy="0" rx="60" ry="48" fill="${"{fg}"}" fill-opacity="0.08" stroke="${"{fg}"}" stroke-opacity="0.35" stroke-width="2.5"/>
-    <path d="M-10,0 Q0,-12 10,0" fill="none" stroke="${"{fg}"}" stroke-opacity="0.3" stroke-width="2"/>
-    <line x1="-130" y1="-5" x2="-170" y2="-20" stroke="${"{fg}"}" stroke-opacity="0.25" stroke-width="2" stroke-linecap="round"/>
-    <line x1="130" y1="-5" x2="170" y2="-20" stroke="${"{fg}"}" stroke-opacity="0.25" stroke-width="2" stroke-linecap="round"/>
-  </g>`;
-
-const hoodieShape = `
-  <g filter="url(#ds)" transform="translate(300,360)">
-    <path d="M-110,-150 Q0,-190 110,-150 Q130,-120 120,-90 Q100,-70 90,-80 L90,150 Q0,170 -90,150 L-90,-80 Q-100,-70 -120,-90 Q-130,-120 -110,-150Z" fill="${"{fg}"}" fill-opacity="0.1" stroke="${"{fg}"}" stroke-opacity="0.3" stroke-width="2"/>
-    <ellipse cx="0" cy="-110" rx="35" ry="22" fill="none" stroke="${"{fg}"}" stroke-opacity="0.18" stroke-width="1.5"/>
-    <path d="M-30,110 Q0,125 30,110" fill="none" stroke="${"{fg}"}" stroke-opacity="0.12" stroke-width="1"/>
-    <line x1="0" y1="-150" x2="0" y2="-90" stroke="${"{fg}"}" stroke-opacity="0.12" stroke-width="1"/>
-  </g>`;
-
-const jacketShape = `
-  <g filter="url(#ds)" transform="translate(300,360)">
-    <path d="M-100,-160 L0,-180 L100,-160 L110,160 L-110,160Z" fill="${"{fg}"}" fill-opacity="0.08" stroke="${"{fg}"}" stroke-opacity="0.3" stroke-width="2"/>
-    <line x1="0" y1="-180" x2="0" y2="160" stroke="${"{fg}"}" stroke-opacity="0.15" stroke-width="1.5"/>
-    <path d="M-100,-160 Q-50,-120 -30,-60" fill="none" stroke="${"{fg}"}" stroke-opacity="0.15" stroke-width="1.5"/>
-    <path d="M100,-160 Q50,-120 30,-60" fill="none" stroke="${"{fg}"}" stroke-opacity="0.15" stroke-width="1.5"/>
-    <rect x="-80" y="60" width="160" height="3" rx="1.5" fill="${"{fg}"}" fill-opacity="0.1"/>
-  </g>`;
-
-// Helper to resolve fg references in shapes
-function resolveShape(shapeTemplate: string, fg: string): string {
-  return shapeTemplate.replace(/\$\{"\{fg\}"\}/g, fg);
-}
 
 // ─── Category Images ───────────────────────────────────────────────────────
 
@@ -158,49 +47,49 @@ export const categories: Category[] = [
     id: "footwear",
     name: "Footwear",
     slug: "footwear",
-    image: createCategoryImage("#252220", "#352f2a", "#C4B896", "👟", "5 PRODUCTS"),
+    image: createCategoryImage("#252220", "#352f2a", "#D4A574", "👟", "5 ITEMS"),
     productCount: 5,
   },
   {
     id: "hoodies",
     name: "Hoodies",
     slug: "hoodies",
-    image: createCategoryImage("#1e2225", "#2a2f33", "#A8B4C0", "🧥", "4 PRODUCTS"),
+    image: createCategoryImage("#1e2225", "#2a2f33", "#A8B4C0", "🧥", "4 ITEMS"),
     productCount: 4,
   },
   {
     id: "t-shirts",
     name: "T-Shirts",
     slug: "t-shirts",
-    image: createCategoryImage("#22201e", "#302c28", "#D4C5A9", "👕", "5 PRODUCTS"),
+    image: createCategoryImage("#22201e", "#302c28", "#D4C5A9", "👕", "5 ITEMS"),
     productCount: 5,
   },
   {
     id: "jackets",
     name: "Jackets",
     slug: "jackets",
-    image: createCategoryImage("#1c1e20", "#282c2e", "#B8C4D0", "🧥", "4 PRODUCTS"),
+    image: createCategoryImage("#1c1e20", "#282c2e", "#B8C4D0", "🧥", "4 ITEMS"),
     productCount: 4,
   },
   {
     id: "bags",
     name: "Bags",
     slug: "bags",
-    image: createCategoryImage("#201c1a", "#2e2826", "#C8A882", "👜", "4 PRODUCTS"),
+    image: createCategoryImage("#201c1a", "#2e2826", "#C8A882", "👜", "4 ITEMS"),
     productCount: 4,
   },
   {
     id: "watches",
     name: "Watches",
     slug: "watches",
-    image: createCategoryImage("#1a1c1e", "#262828", "#C0B8A8", "⌚", "4 PRODUCTS"),
+    image: createCategoryImage("#1a1c1e", "#262828", "#C0B8A8", "⌚", "4 ITEMS"),
     productCount: 4,
   },
   {
     id: "accessories",
     name: "Accessories",
     slug: "accessories",
-    image: createCategoryImage("#1e1c20", "#2a282c", "#B0A898", "🕶", "3 PRODUCTS"),
+    image: createCategoryImage("#1e1c20", "#2a282c", "#B0A898", "🕶", "3 ITEMS"),
     productCount: 3,
   },
 ];
@@ -233,10 +122,7 @@ export const products: Product[] = [
     rating: 4.8,
     reviewCount: 247,
     badge: "bestseller",
-    images: [
-      createProductImage("#3a3530", "#4a4540", "#f0ebe0", resolveShape(tshirtShape, "#f0ebe0"), "LUMA"),
-      createProductImage("#44403a", "#54504a", "#e8e0d0", resolveShape(tshirtShape, "#e8e0d0"), "LUMA"),
-    ],
+    images: [tshirtImage("#3a3530", "#4a4540", "#f0ebe0"), tshirtImage("#44403a", "#54504a", "#e8e0d0")],
     inStock: true,
     isBestseller: true,
   },
@@ -265,10 +151,7 @@ export const products: Product[] = [
     rating: 4.7,
     reviewCount: 183,
     badge: "sale",
-    images: [
-      createProductImage("#35302a", "#45403a", "#d4c5a9", resolveShape(shoeShape, "#d4c5a9"), "LUMA"),
-      createProductImage("#3e3832", "#4e4842", "#c4b896", resolveShape(shoeShape, "#c4b896"), "LUMA"),
-    ],
+    images: [sneakerImage("#35302a", "#45403a", "#d4c5a9"), sneakerImage("#3e3832", "#4e4842", "#c4b896")],
     inStock: true,
   },
   {
@@ -295,10 +178,7 @@ export const products: Product[] = [
     rating: 4.9,
     reviewCount: 92,
     badge: "limited",
-    images: [
-      createProductImage("#2a2c30", "#3a3c40", "#c0b8a8", resolveShape(watchShape, "#c0b8a8"), "LUMA"),
-      createProductImage("#33353a", "#43454a", "#c9a96e", resolveShape(watchShape, "#c9a96e"), "LUMA"),
-    ],
+    images: [watchImage("#2a2c30", "#3a3c40", "#c0b8a8"), watchImage("#33353a", "#43454a", "#c9a96e")],
     inStock: true,
   },
   {
@@ -325,10 +205,7 @@ export const products: Product[] = [
     rating: 4.8,
     reviewCount: 156,
     badge: "bestseller",
-    images: [
-      createProductImage("#302820", "#403830", "#c8a882", resolveShape(bagShape, "#c8a882"), "LUMA"),
-      createProductImage("#3a3228", "#4a4238", "#d4c5a9", resolveShape(bagShape, "#d4c5a9"), "LUMA"),
-    ],
+    images: [bagImage("#302820", "#403830", "#c8a882"), bagImage("#3a3228", "#4a4238", "#d4c5a9")],
     inStock: true,
     isBestseller: true,
   },
@@ -355,10 +232,7 @@ export const products: Product[] = [
     sizes: ["One Size"],
     rating: 4.6,
     reviewCount: 214,
-    images: [
-      createProductImage("#28262a", "#38363c", "#b0a898", resolveShape(glassesShape, "#b0a898"), "LUMA"),
-      createProductImage("#302e34", "#403e44", "#c8c0b0", resolveShape(glassesShape, "#c8c0b0"), "LUMA"),
-    ],
+    images: [glassesImage("#28262a", "#38363c", "#b0a898"), glassesImage("#302e34", "#403e44", "#c8c0b0")],
     inStock: true,
   },
   {
@@ -386,10 +260,7 @@ export const products: Product[] = [
     rating: 4.9,
     reviewCount: 312,
     badge: "bestseller",
-    images: [
-      createProductImage("#2a2e33", "#3a3e43", "#a8b4c0", resolveShape(hoodieShape, "#a8b4c0"), "LUMA"),
-      createProductImage("#333740", "#434750", "#b8c4d0", resolveShape(hoodieShape, "#b8c4d0"), "LUMA"),
-    ],
+    images: [hoodieImage("#2a2e33", "#3a3e43", "#a8b4c0"), hoodieImage("#333740", "#434750", "#b8c4d0")],
     inStock: true,
     isNew: true,
     isBestseller: true,
@@ -418,10 +289,7 @@ export const products: Product[] = [
     rating: 4.7,
     reviewCount: 89,
     badge: "new",
-    images: [
-      createProductImage("#252830", "#353840", "#b8c4d0", resolveShape(jacketShape, "#b8c4d0"), "LUMA"),
-      createProductImage("#2e3038", "#3e4048", "#c0ccd8", resolveShape(jacketShape, "#c0ccd8"), "LUMA"),
-    ],
+    images: [jacketImage("#252830", "#353840", "#b8c4d0"), jacketImage("#2e3038", "#3e4048", "#c0ccd8")],
     inStock: true,
     isNew: true,
   },
@@ -448,10 +316,7 @@ export const products: Product[] = [
     sizes: ["7", "8", "9", "10", "11", "12"],
     rating: 4.6,
     reviewCount: 167,
-    images: [
-      createProductImage("#302c28", "#403c38", "#d4c5a9", resolveShape(shoeShape, "#d4c5a9"), "LUMA"),
-      createProductImage("#3a3630", "#4a4640", "#c4b896", resolveShape(shoeShape, "#c4b896"), "LUMA"),
-    ],
+    images: [sneakerImage("#302c28", "#403c38", "#d4c5a9"), sneakerImage("#3a3630", "#4a4640", "#c4b896")],
     inStock: true,
   },
   {
@@ -478,10 +343,7 @@ export const products: Product[] = [
     rating: 4.5,
     reviewCount: 198,
     badge: "new",
-    images: [
-      createProductImage("#35302a", "#45403a", "#d4c5a9", resolveShape(tshirtShape, "#d4c5a9"), "LUMA"),
-      createProductImage("#3e3832", "#4e4842", "#c4b896", resolveShape(tshirtShape, "#c4b896"), "LUMA"),
-    ],
+    images: [tshirtImage("#35302a", "#45403a", "#d4c5a9"), tshirtImage("#3e3832", "#4e4842", "#c4b896")],
     inStock: true,
     isNew: true,
   },
@@ -508,10 +370,7 @@ export const products: Product[] = [
     sizes: ["XS", "S", "M", "L", "XL"],
     rating: 4.4,
     reviewCount: 134,
-    images: [
-      createProductImage("#383430", "#484440", "#c8baa8", resolveShape(tshirtShape, "#c8baa8"), "LUMA"),
-      createProductImage("#423e38", "#524e48", "#b8aa98", resolveShape(tshirtShape, "#b8aa98"), "LUMA"),
-    ],
+    images: [tshirtImage("#383430", "#484440", "#c8baa8"), tshirtImage("#423e38", "#524e48", "#b8aa98")],
     inStock: true,
   },
   {
@@ -537,10 +396,7 @@ export const products: Product[] = [
     sizes: ["S", "M", "L", "XL", "XXL"],
     rating: 4.7,
     reviewCount: 178,
-    images: [
-      createProductImage("#282c32", "#383c42", "#a8b4c0", resolveShape(hoodieShape, "#a8b4c0"), "LUMA"),
-      createProductImage("#323640", "#424650", "#b8c4d0", resolveShape(hoodieShape, "#b8c4d0"), "LUMA"),
-    ],
+    images: [hoodieImage("#282c32", "#383c42", "#a8b4c0"), hoodieImage("#323640", "#424650", "#b8c4d0")],
     inStock: true,
   },
   {
@@ -567,10 +423,7 @@ export const products: Product[] = [
     rating: 4.6,
     reviewCount: 145,
     badge: "sale",
-    images: [
-      createProductImage("#2c2e35", "#3c3e45", "#a0acb8", resolveShape(hoodieShape, "#a0acb8"), "LUMA"),
-      createProductImage("#353740", "#454750", "#b0bcc8", resolveShape(hoodieShape, "#b0bcc8"), "LUMA"),
-    ],
+    images: [hoodieImage("#2c2e35", "#3c3e45", "#a0acb8"), hoodieImage("#353740", "#454750", "#b0bcc8")],
     inStock: true,
   },
   {
@@ -596,10 +449,7 @@ export const products: Product[] = [
     sizes: ["S", "M", "L", "XL"],
     rating: 4.5,
     reviewCount: 102,
-    images: [
-      createProductImage("#363230", "#464240", "#d0c2b0", resolveShape(tshirtShape, "#d0c2b0"), "LUMA"),
-      createProductImage("#403c38", "#504c48", "#c0b2a0", resolveShape(tshirtShape, "#c0b2a0"), "LUMA"),
-    ],
+    images: [tshirtImage("#363230", "#464240", "#d0c2b0"), tshirtImage("#403c38", "#504c48", "#c0b2a0")],
     inStock: true,
   },
   {
@@ -625,10 +475,7 @@ export const products: Product[] = [
     rating: 4.3,
     reviewCount: 87,
     badge: "new",
-    images: [
-      createProductImage("#2e2a26", "#3e3a36", "#d4c5a9", resolveShape(tshirtShape, "#d4c5a9"), "LUMA"),
-      createProductImage("#383430", "#484440", "#c4b896", resolveShape(tshirtShape, "#c4b896"), "LUMA"),
-    ],
+    images: [tshirtImage("#2e2a26", "#3e3a36", "#d4c5a9"), tshirtImage("#383430", "#484440", "#c4b896")],
     inStock: true,
     isNew: true,
   },
@@ -656,10 +503,7 @@ export const products: Product[] = [
     rating: 4.8,
     reviewCount: 76,
     badge: "new",
-    images: [
-      createProductImage("#2a2620", "#3a3630", "#c4b896", resolveShape(shoeShape, "#c4b896"), "LUMA"),
-      createProductImage("#343028", "#444038", "#d4c5a9", resolveShape(shoeShape, "#d4c5a9"), "LUMA"),
-    ],
+    images: [sneakerImage("#2a2620", "#3a3630", "#c4b896"), sneakerImage("#343028", "#444038", "#d4c5a9")],
     inStock: true,
     isNew: true,
   },
@@ -686,10 +530,7 @@ export const products: Product[] = [
     ],
     rating: 4.5,
     reviewCount: 119,
-    images: [
-      createProductImage("#2e2a24", "#3e3a34", "#c8bca8", resolveShape(shoeShape, "#c8bca8"), "LUMA"),
-      createProductImage("#38342e", "#48443e", "#b8ac98", resolveShape(shoeShape, "#b8ac98"), "LUMA"),
-    ],
+    images: [sneakerImage("#2e2a24", "#3e3a34", "#c8bca8"), sneakerImage("#38342e", "#48443e", "#b8ac98")],
     inStock: true,
   },
   {
@@ -714,10 +555,7 @@ export const products: Product[] = [
     sizes: ["S", "M", "L", "XL"],
     rating: 4.7,
     reviewCount: 64,
-    images: [
-      createProductImage("#282c30", "#383c40", "#c0ccd8", resolveShape(jacketShape, "#c0ccd8"), "LUMA"),
-      createProductImage("#303438", "#404448", "#b0bcc8", resolveShape(jacketShape, "#b0bcc8"), "LUMA"),
-    ],
+    images: [jacketImage("#282c30", "#383c40", "#c0ccd8"), jacketImage("#303438", "#404448", "#b0bcc8")],
     inStock: true,
   },
   {
@@ -744,10 +582,7 @@ export const products: Product[] = [
     rating: 4.9,
     reviewCount: 41,
     badge: "limited",
-    images: [
-      createProductImage("#2c2820", "#3c3830", "#d4c5a9", resolveShape(jacketShape, "#d4c5a9"), "LUMA"),
-      createProductImage("#363228", "#464238", "#c4b896", resolveShape(jacketShape, "#c4b896"), "LUMA"),
-    ],
+    images: [jacketImage("#2c2820", "#3c3830", "#d4c5a9"), jacketImage("#363228", "#464238", "#c4b896")],
     inStock: true,
   },
   {
@@ -772,10 +607,7 @@ export const products: Product[] = [
     sizes: ["S", "M", "L", "XL"],
     rating: 4.6,
     reviewCount: 53,
-    images: [
-      createProductImage("#262a30", "#363a40", "#b8c4d0", resolveShape(jacketShape, "#b8c4d0"), "LUMA"),
-      createProductImage("#303440", "#404450", "#a8b4c0", resolveShape(jacketShape, "#a8b4c0"), "LUMA"),
-    ],
+    images: [jacketImage("#262a30", "#363a40", "#b8c4d0"), jacketImage("#303440", "#404450", "#a8b4c0")],
     inStock: true,
   },
   {
@@ -800,10 +632,7 @@ export const products: Product[] = [
     sizes: ["One Size"],
     rating: 4.5,
     reviewCount: 108,
-    images: [
-      createProductImage("#2c2822", "#3c3832", "#c8a882", resolveShape(bagShape, "#c8a882"), "LUMA"),
-      createProductImage("#36322c", "#46423c", "#d4b892", resolveShape(bagShape, "#d4b892"), "LUMA"),
-    ],
+    images: [bagImage("#2c2822", "#3c3832", "#c8a882"), bagImage("#36322c", "#46423c", "#d4b892")],
     inStock: true,
   },
   {
@@ -829,10 +658,7 @@ export const products: Product[] = [
     rating: 4.8,
     reviewCount: 67,
     badge: "new",
-    images: [
-      createProductImage("#2a241e", "#3a342e", "#c8a882", resolveShape(bagShape, "#c8a882"), "LUMA"),
-      createProductImage("#342e28", "#443e38", "#d4b892", resolveShape(bagShape, "#d4b892"), "LUMA"),
-    ],
+    images: [bagImage("#2a241e", "#3a342e", "#c8a882"), bagImage("#342e28", "#443e38", "#d4b892")],
     inStock: true,
     isNew: true,
   },
@@ -859,10 +685,7 @@ export const products: Product[] = [
     sizes: ["One Size"],
     rating: 4.4,
     reviewCount: 93,
-    images: [
-      createProductImage("#2e2620", "#3e3630", "#c8a882", resolveShape(bagShape, "#c8a882"), "LUMA"),
-      createProductImage("#38322c", "#48423c", "#d4b892", resolveShape(bagShape, "#d4b892"), "LUMA"),
-    ],
+    images: [bagImage("#2e2620", "#3e3630", "#c8a882"), bagImage("#38322c", "#48423c", "#d4b892")],
     inStock: true,
   },
   {
@@ -887,10 +710,7 @@ export const products: Product[] = [
     sizes: ["38mm"],
     rating: 4.7,
     reviewCount: 134,
-    images: [
-      createProductImage("#2a2c28", "#3a3c38", "#c0b8a8", resolveShape(watchShape, "#c0b8a8"), "LUMA"),
-      createProductImage("#343630", "#444640", "#d0c8b8", resolveShape(watchShape, "#d0c8b8"), "LUMA"),
-    ],
+    images: [watchImage("#2a2c28", "#3a3c38", "#c0b8a8"), watchImage("#343630", "#444640", "#d0c8b8")],
     inStock: true,
   },
   {
@@ -916,10 +736,7 @@ export const products: Product[] = [
     rating: 4.8,
     reviewCount: 89,
     badge: "bestseller",
-    images: [
-      createProductImage("#2c2e30", "#3c3e40", "#c8c0b0", resolveShape(watchShape, "#c8c0b0"), "LUMA"),
-      createProductImage("#36383c", "#46484c", "#c9a96e", resolveShape(watchShape, "#c9a96e"), "LUMA"),
-    ],
+    images: [watchImage("#2c2e30", "#3c3e40", "#c8c0b0"), watchImage("#36383c", "#46484c", "#c9a96e")],
     inStock: true,
     isBestseller: true,
   },
@@ -946,10 +763,7 @@ export const products: Product[] = [
     rating: 4.9,
     reviewCount: 56,
     badge: "limited",
-    images: [
-      createProductImage("#282a30", "#383a40", "#c0b8a8", resolveShape(watchShape, "#c0b8a8"), "LUMA"),
-      createProductImage("#32343a", "#42444a", "#d0c8b8", resolveShape(watchShape, "#d0c8b8"), "LUMA"),
-    ],
+    images: [watchImage("#282a30", "#383a40", "#c0b8a8"), watchImage("#32343a", "#42444a", "#d0c8b8")],
     inStock: true,
   },
   {
@@ -974,10 +788,7 @@ export const products: Product[] = [
     sizes: ["S (28-30)", "M (31-33)", "L (34-36)", "XL (37-40)"],
     rating: 4.6,
     reviewCount: 178,
-    images: [
-      createProductImage("#2a2620", "#3a3630", "#b0a898", resolveShape(watchShape, "#b0a898"), "LUMA"),
-      createProductImage("#34302a", "#44403a", "#c0b8a8", resolveShape(watchShape, "#c0b8a8"), "LUMA"),
-    ],
+    images: [watchImage("#2a2620", "#3a3630", "#b0a898"), watchImage("#34302a", "#44403a", "#c0b8a8")],
     inStock: true,
   },
   {
@@ -1003,10 +814,7 @@ export const products: Product[] = [
     sizes: ["One Size"],
     rating: 4.7,
     reviewCount: 203,
-    images: [
-      createProductImage("#2c2820", "#3c3830", "#b0a898", resolveShape(bagShape, "#b0a898"), "LUMA"),
-      createProductImage("#36322a", "#46423a", "#c0b8a8", resolveShape(bagShape, "#c0b8a8"), "LUMA"),
-    ],
+    images: [bagImage("#2c2820", "#3c3830", "#b0a898"), bagImage("#36322a", "#46423a", "#c0b8a8")],
     inStock: true,
   },
 ];
