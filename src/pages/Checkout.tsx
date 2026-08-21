@@ -57,7 +57,7 @@ export default function Checkout() {
   };
 
   const inputClass =
-    "w-full h-11 px-4 bg-background border border-border rounded-lg text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/30 transition-colors";
+    "w-full h-11 px-4 bg-background border border-border/50 rounded-xl text-[13px] text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-border transition-colors";
 
   return (
     <div className="min-h-screen pt-20 pb-20">
@@ -70,27 +70,33 @@ export default function Checkout() {
                 <div className="flex items-center gap-2">
                   <div
                     className={cn(
-                      "flex items-center justify-center w-8 h-8 rounded-full text-xs font-medium transition-colors",
+                      "flex items-center justify-center w-8 h-8 rounded-full text-[11px] font-semibold transition-colors",
                       currentStep > step.id
                         ? "bg-foreground text-background"
                         : currentStep === step.id
                           ? "bg-foreground text-background"
-                          : "bg-card border border-border text-muted-foreground"
+                          : "bg-card/60 border border-border/40 text-muted-foreground/50"
                     )}
                   >
-                    {currentStep > step.id ? <Check className="h-4 w-4" /> : step.id}
+                    {currentStep > step.id ? (
+                      <Check className="h-3.5 w-3.5" />
+                    ) : (
+                      step.id
+                    )}
                   </div>
                   <span
                     className={cn(
-                      "text-sm hidden sm:block",
-                      currentStep >= step.id ? "text-foreground font-medium" : "text-muted-foreground"
+                      "text-[13px] hidden sm:block",
+                      currentStep >= step.id
+                        ? "text-foreground font-medium"
+                        : "text-muted-foreground/50"
                     )}
                   >
                     {step.label}
                   </span>
                 </div>
                 {i < steps.length - 1 && (
-                  <ChevronRight className="h-4 w-4 text-muted-foreground/30 mx-2 sm:mx-4" />
+                  <ChevronRight className="h-4 w-4 text-muted-foreground/20 mx-2 sm:mx-4" />
                 )}
               </div>
             ))}
@@ -103,14 +109,16 @@ export default function Checkout() {
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentStep}
-                initial={{ opacity: 0, x: 20 }}
+                initial={{ opacity: 0, x: 16 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
+                exit={{ opacity: 0, x: -16 }}
                 transition={{ duration: 0.2 }}
               >
                 {currentStep === 1 && (
-                  <div className="space-y-6">
-                    <h2 className="text-xl font-serif font-semibold text-foreground">Contact Information</h2>
+                  <div className="space-y-5">
+                    <h2 className="text-xl font-serif font-semibold text-foreground">
+                      Contact Information
+                    </h2>
                     <input
                       type="email"
                       placeholder="Email address"
@@ -118,20 +126,26 @@ export default function Checkout() {
                       onChange={(e) => updateForm("email", e.target.value)}
                       className={inputClass}
                     />
-                    <h2 className="text-xl font-serif font-semibold text-foreground pt-2">Shipping Address</h2>
+                    <h2 className="text-xl font-serif font-semibold text-foreground pt-2">
+                      Shipping Address
+                    </h2>
                     <div className="grid grid-cols-2 gap-4">
                       <input
                         type="text"
                         placeholder="First name"
                         value={form.firstName}
-                        onChange={(e) => updateForm("firstName", e.target.value)}
+                        onChange={(e) =>
+                          updateForm("firstName", e.target.value)
+                        }
                         className={inputClass}
                       />
                       <input
                         type="text"
                         placeholder="Last name"
                         value={form.lastName}
-                        onChange={(e) => updateForm("lastName", e.target.value)}
+                        onChange={(e) =>
+                          updateForm("lastName", e.target.value)
+                        }
                         className={inputClass}
                       />
                     </div>
@@ -139,7 +153,9 @@ export default function Checkout() {
                       type="text"
                       placeholder="Address"
                       value={form.address}
-                      onChange={(e) => updateForm("address", e.target.value)}
+                      onChange={(e) =>
+                        updateForm("address", e.target.value)
+                      }
                       className={inputClass}
                     />
                     <div className="grid grid-cols-3 gap-4">
@@ -176,25 +192,47 @@ export default function Checkout() {
                 )}
 
                 {currentStep === 2 && (
-                  <div className="space-y-6">
-                    <h2 className="text-xl font-serif font-semibold text-foreground">Shipping Method</h2>
+                  <div className="space-y-5">
+                    <h2 className="text-xl font-serif font-semibold text-foreground">
+                      Shipping Method
+                    </h2>
                     {[
-                      { id: "standard", label: "Standard Shipping", time: "5–7 business days", price: shipping === 0 ? "Free" : "$12.00" },
-                      { id: "express", label: "Express Shipping", time: "2–3 business days", price: "$18.00" },
-                      { id: "overnight", label: "Overnight Shipping", time: "Next business day", price: "$28.00" },
+                      {
+                        id: "standard",
+                        label: "Standard Shipping",
+                        time: "5–7 business days",
+                        price:
+                          shipping === 0 ? "Free" : "$12.00",
+                      },
+                      {
+                        id: "express",
+                        label: "Express Shipping",
+                        time: "2–3 business days",
+                        price: "$18.00",
+                      },
+                      {
+                        id: "overnight",
+                        label: "Overnight Shipping",
+                        time: "Next business day",
+                        price: "$28.00",
+                      },
                     ].map((method) => (
                       <label
                         key={method.id}
                         className={cn(
-                          "flex items-center justify-between p-4 bg-card border rounded-xl cursor-pointer transition-colors",
-                          form.shippingMethod === method.id ? "border-foreground" : "border-border hover:border-foreground/30"
+                          "flex items-center justify-between p-4 bg-card/50 border rounded-2xl cursor-pointer transition-all duration-200",
+                          form.shippingMethod === method.id
+                            ? "border-foreground/60"
+                            : "border-border/30 hover:border-foreground/15"
                         )}
                       >
                         <div className="flex items-center gap-3">
                           <div
                             className={cn(
-                              "w-5 h-5 rounded-full border-2 flex items-center justify-center",
-                              form.shippingMethod === method.id ? "border-foreground" : "border-border"
+                              "w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors",
+                              form.shippingMethod === method.id
+                                ? "border-foreground"
+                                : "border-border/50"
                             )}
                           >
                             {form.shippingMethod === method.id && (
@@ -202,28 +240,40 @@ export default function Checkout() {
                             )}
                           </div>
                           <div>
-                            <p className="text-sm font-medium text-foreground">{method.label}</p>
-                            <p className="text-xs text-muted-foreground">{method.time}</p>
+                            <p className="text-[13px] font-medium text-foreground/90">
+                              {method.label}
+                            </p>
+                            <p className="text-[11px] text-muted-foreground/50">
+                              {method.time}
+                            </p>
                           </div>
                         </div>
-                        <span className="text-sm font-medium text-foreground">{method.price}</span>
+                        <span className="text-[13px] font-medium text-foreground/90">
+                          {method.price}
+                        </span>
                       </label>
                     ))}
                   </div>
                 )}
 
                 {currentStep === 3 && (
-                  <div className="space-y-6">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Lock className="h-4 w-4 text-muted-foreground" />
-                      <p className="text-xs text-muted-foreground">Demo checkout — no real payment will be processed</p>
+                  <div className="space-y-5">
+                    <div className="flex items-center gap-2 mb-2 p-3 bg-muted/20 rounded-xl">
+                      <Lock className="h-3.5 w-3.5 text-muted-foreground/50" />
+                      <p className="text-[11px] text-muted-foreground/60 font-medium">
+                        Demo checkout — no real payment will be processed
+                      </p>
                     </div>
-                    <h2 className="text-xl font-serif font-semibold text-foreground">Payment</h2>
+                    <h2 className="text-xl font-serif font-semibold text-foreground">
+                      Payment
+                    </h2>
                     <input
                       type="text"
                       placeholder="Card number"
                       value={form.cardNumber}
-                      onChange={(e) => updateForm("cardNumber", e.target.value)}
+                      onChange={(e) =>
+                        updateForm("cardNumber", e.target.value)
+                      }
                       className={inputClass}
                     />
                     <div className="grid grid-cols-2 gap-4">
@@ -231,14 +281,18 @@ export default function Checkout() {
                         type="text"
                         placeholder="MM / YY"
                         value={form.cardExpiry}
-                        onChange={(e) => updateForm("cardExpiry", e.target.value)}
+                        onChange={(e) =>
+                          updateForm("cardExpiry", e.target.value)
+                        }
                         className={inputClass}
                       />
                       <input
                         type="text"
                         placeholder="CVC"
                         value={form.cardCvc}
-                        onChange={(e) => updateForm("cardCvc", e.target.value)}
+                        onChange={(e) =>
+                          updateForm("cardCvc", e.target.value)
+                        }
                         className={inputClass}
                       />
                     </div>
@@ -246,43 +300,67 @@ export default function Checkout() {
                       type="text"
                       placeholder="Name on card"
                       value={form.cardName}
-                      onChange={(e) => updateForm("cardName", e.target.value)}
+                      onChange={(e) =>
+                        updateForm("cardName", e.target.value)
+                      }
                       className={inputClass}
                     />
                   </div>
                 )}
 
                 {currentStep === 4 && (
-                  <div className="space-y-6">
-                    <h2 className="text-xl font-serif font-semibold text-foreground">Review Order</h2>
-                    <div className="bg-card border border-border rounded-xl p-4 space-y-4">
+                  <div className="space-y-5">
+                    <h2 className="text-xl font-serif font-semibold text-foreground">
+                      Review Order
+                    </h2>
+                    <div className="bg-card/50 border border-border/30 rounded-2xl p-5 space-y-4">
                       <div>
-                        <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Shipping to</p>
-                        <p className="text-sm text-foreground">
+                        <p className="text-[10px] text-muted-foreground/50 uppercase tracking-[0.15em] font-medium mb-1">
+                          Shipping to
+                        </p>
+                        <p className="text-[13px] text-foreground/90">
                           {form.firstName} {form.lastName}
                         </p>
-                        <p className="text-sm text-muted-foreground">
-                          {form.address}, {form.city} {form.state} {form.zip}
+                        <p className="text-[13px] text-muted-foreground/60">
+                          {form.address}, {form.city} {form.state}{" "}
+                          {form.zip}
                         </p>
                       </div>
                       <div>
-                        <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Payment</p>
-                        <p className="text-sm text-foreground">
-                          •••• •••• •••• {form.cardNumber.slice(-4) || "0000"}
+                        <p className="text-[10px] text-muted-foreground/50 uppercase tracking-[0.15em] font-medium mb-1">
+                          Payment
+                        </p>
+                        <p className="text-[13px] text-foreground/90">
+                          •••• •••• ••••{" "}
+                          {form.cardNumber.slice(-4) || "0000"}
                         </p>
                       </div>
                     </div>
                     <div className="space-y-3">
                       {items.map((item) => (
-                        <div key={`${item.productId}-${item.color}-${item.size}`} className="flex gap-3">
-                          <div className="w-12 h-14 rounded-lg overflow-hidden bg-muted flex-shrink-0">
-                            <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                        <div
+                          key={`${item.productId}-${item.color}-${item.size}`}
+                          className="flex gap-3"
+                        >
+                          <div className="w-12 h-14 rounded-xl overflow-hidden bg-muted/30 flex-shrink-0">
+                            <img
+                              src={item.image}
+                              alt={item.name}
+                              className="w-full h-full object-cover"
+                            />
                           </div>
                           <div className="flex-1">
-                            <p className="text-sm font-medium text-foreground">{item.name}</p>
-                            <p className="text-xs text-muted-foreground">{item.color} / {item.size} × {item.quantity}</p>
+                            <p className="text-[13px] font-medium text-foreground/90">
+                              {item.name}
+                            </p>
+                            <p className="text-[11px] text-muted-foreground/50">
+                              {item.color} / {item.size} ×{" "}
+                              {item.quantity}
+                            </p>
                           </div>
-                          <span className="text-sm font-medium text-foreground">${(item.price * item.quantity).toFixed(2)}</span>
+                          <span className="text-[13px] font-medium text-foreground/90">
+                            ${(item.price * item.quantity).toFixed(2)}
+                          </span>
                         </div>
                       ))}
                     </div>
@@ -292,11 +370,11 @@ export default function Checkout() {
             </AnimatePresence>
 
             {/* Navigation */}
-            <div className="flex items-center justify-between mt-10 pt-6 border-t border-border">
+            <div className="flex items-center justify-between mt-10 pt-6 border-t border-border/40">
               {currentStep > 1 ? (
                 <button
                   onClick={handleBack}
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-[13px] text-muted-foreground/60 hover:text-foreground transition-colors"
                 >
                   ← Back
                 </button>
@@ -306,7 +384,7 @@ export default function Checkout() {
               {currentStep < 4 ? (
                 <button
                   onClick={handleNext}
-                  className="px-8 py-3 bg-foreground text-background text-sm font-medium rounded-xl hover:bg-foreground/90 transition-colors"
+                  className="px-8 py-3 bg-foreground text-background text-[13px] font-semibold rounded-xl hover:bg-foreground/90 transition-colors tracking-wide"
                 >
                   Continue
                 </button>
@@ -314,7 +392,7 @@ export default function Checkout() {
                 <button
                   onClick={handlePlaceOrder}
                   disabled={isProcessing}
-                  className="px-8 py-3 bg-foreground text-background text-sm font-medium rounded-xl hover:bg-foreground/90 transition-colors disabled:opacity-50"
+                  className="px-8 py-3 bg-foreground text-background text-[13px] font-semibold rounded-xl hover:bg-foreground/90 transition-colors disabled:opacity-50 tracking-wide"
                 >
                   {isProcessing ? "Processing..." : "Place Order"}
                 </button>
@@ -324,41 +402,67 @@ export default function Checkout() {
 
           {/* Order Summary Sidebar */}
           <div className="lg:col-span-2">
-            <div className="sticky top-24 bg-card border border-border rounded-xl p-6">
-              <h3 className="text-sm font-semibold text-foreground mb-4">
-                Order Summary ({items.length} {items.length === 1 ? "item" : "items"})
+            <div className="sticky top-24 bg-card/50 border border-border/30 rounded-2xl p-6">
+              <h3 className="text-[13px] font-semibold text-foreground mb-5">
+                Order Summary ({items.length}{" "}
+                {items.length === 1 ? "item" : "items"})
               </h3>
-              <div className="space-y-3 mb-4 max-h-64 overflow-y-auto">
+              <div className="space-y-3 mb-5 max-h-64 overflow-y-auto">
                 {items.map((item) => (
-                  <div key={`${item.productId}-${item.color}-${item.size}`} className="flex gap-3">
-                    <div className="w-14 h-16 rounded-lg overflow-hidden bg-muted flex-shrink-0 relative">
-                      <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
-                      <span className="absolute -top-1.5 -right-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-muted-foreground text-[9px] font-medium text-background">
+                  <div
+                    key={`${item.productId}-${item.color}-${item.size}`}
+                    className="flex gap-3"
+                  >
+                    <div className="w-14 h-16 rounded-xl overflow-hidden bg-muted/30 flex-shrink-0 relative">
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="w-full h-full object-cover"
+                      />
+                      <span className="absolute -top-1.5 -right-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-muted-foreground/70 text-[9px] font-semibold text-background">
                         {item.quantity}
                       </span>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-foreground truncate">{item.name}</p>
-                      <p className="text-xs text-muted-foreground">{item.color} / {item.size}</p>
+                      <p className="text-[13px] font-medium text-foreground/90 truncate">
+                        {item.name}
+                      </p>
+                      <p className="text-[11px] text-muted-foreground/50">
+                        {item.color} / {item.size}
+                      </p>
                     </div>
-                    <span className="text-sm font-medium text-foreground">${(item.price * item.quantity).toFixed(2)}</span>
+                    <span className="text-[13px] font-medium text-foreground/90">
+                      ${(item.price * item.quantity).toFixed(2)}
+                    </span>
                   </div>
                 ))}
               </div>
-              <div className="border-t border-border pt-4 space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Subtotal</span>
-                  <span className="text-foreground">${subtotal.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Shipping</span>
-                  <span className={cn("text-foreground", shipping === 0 && "text-green-600 dark:text-green-400")}>
-                    {shipping === 0 ? "Free" : `$${shipping.toFixed(2)}`}
+              <div className="border-t border-border/40 pt-4 space-y-2.5">
+                <div className="flex justify-between text-[13px]">
+                  <span className="text-muted-foreground/60">Subtotal</span>
+                  <span className="text-foreground/90">
+                    ${subtotal.toFixed(2)}
                   </span>
                 </div>
-                <div className="flex justify-between text-sm font-semibold pt-2 border-t border-border">
-                  <span className="text-foreground">Total</span>
-                  <span className="text-foreground">${total.toFixed(2)}</span>
+                <div className="flex justify-between text-[13px]">
+                  <span className="text-muted-foreground/60">Shipping</span>
+                  <span
+                    className={cn(
+                      "text-foreground/90",
+                      shipping === 0 &&
+                        "text-green-600 dark:text-green-400"
+                    )}
+                  >
+                    {shipping === 0
+                      ? "Free"
+                      : `$${shipping.toFixed(2)}`}
+                  </span>
+                </div>
+                <div className="flex justify-between text-[13px] font-semibold pt-2.5 border-t border-border/40">
+                  <span className="text-foreground/90">Total</span>
+                  <span className="text-foreground/90">
+                    ${total.toFixed(2)}
+                  </span>
                 </div>
               </div>
             </div>
