@@ -1,6 +1,7 @@
-import { StrictMode, lazy, Suspense } from "react";
+import { StrictMode, lazy, Suspense, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Route, Routes, useLocation } from "react-router";
+import { AnimatePresence, motion } from "framer-motion";
 import { Toaster } from "@/components/ui/sonner";
 import { CartProvider } from "@/contexts/CartContext";
 import { WishlistProvider } from "@/contexts/WishlistContext";
@@ -8,7 +9,7 @@ import { ThemeProvider } from "@/contexts/ThemeContext";
 import { OrdersProvider } from "@/contexts/OrdersContext";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
-import { useEffect } from "react";
+import { prefersReducedMotion } from "@/lib/motion";
 import "./index.css";
 
 // Lazy load route components
@@ -25,7 +26,9 @@ const NotFound = lazy(() => import("./pages/NotFound.tsx"));
 function RouteLoading() {
   return (
     <div className="min-h-screen flex items-center justify-center">
-      <div className="animate-pulse text-muted-foreground text-sm">Loading...</div>
+      <div className="animate-pulse text-muted-foreground/50 text-sm font-light tracking-wide">
+        Loading...
+      </div>
     </div>
   );
 }
@@ -38,13 +41,47 @@ function ScrollToTop() {
   return null;
 }
 
-function AppLayout() {
+const reduced = prefersReducedMotion();
+
+/** Page transition wrapper — subtle fade + slide */
+const pageVariants = {
+  initial: {
+    opacity: 0,
+    y: reduced ? 0 : 8,
+  },
+  animate: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.4,
+      ease: [0.25, 1, 0.5, 1] as const,
+    },
+  },
+  exit: {
+    opacity: 0,
+    y: reduced ? 0 : -8,
+    transition: {
+      duration: 0.2,
+      ease: [0.65, 0, 0.35, 1] as const,
+    },
+  },
+};
+
+function AnimatedRoutes() {
+  const location = useLocation();
+
   return (
-    <div className="min-h-screen flex flex-col bg-background text-foreground">
-      <Navbar />
-      <main className="flex-1">
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={location.pathname}
+        variants={pageVariants}
+        initial="initial"
+        animate="animate"
+        exit="exit"
+        className="flex-1"
+      >
         <Suspense fallback={<RouteLoading />}>
-          <Routes>
+          <Routes location={location}>
             <Route path="/" element={<Home />} />
             <Route path="/shop" element={<Shop />} />
             <Route path="/product/:id" element={<ProductDetail />} />
@@ -56,6 +93,17 @@ function AppLayout() {
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
+function AppLayout() {
+  return (
+    <div className="min-h-screen flex flex-col bg-background text-foreground">
+      <Navbar />
+      <main className="flex-1">
+        <AnimatedRoutes />
       </main>
       <Footer />
     </div>

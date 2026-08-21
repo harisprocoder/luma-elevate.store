@@ -166,7 +166,22 @@
   }
 }
 
-/* ─── Editorial Typography Utilities ─────────────────────────────────────── */
+/* ─── Animation Keyframes ─────────────────────────────────────────────── */
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@keyframes draw-check {
+  from { stroke-dashoffset: 60; }
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes pulse-subtle {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.7; }
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
@@ -176,5 +191,19 @@
   }
   .tracking-display {
     letter-spacing: -0.02em;
+  }
+}
+
+/* Reduced motion — disable all animations */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  html {
+    scroll-behavior: auto;
   }
 }

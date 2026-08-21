@@ -5,6 +5,9 @@ import { Check, ChevronRight, Lock } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useOrders } from "@/contexts/OrdersContext";
 import { cn } from "@/lib/utils";
+import { prefersReducedMotion } from "@/lib/motion";
+
+const reduced = prefersReducedMotion();
 
 const steps = [
   { id: 1, label: "Information" },
@@ -13,8 +16,33 @@ const steps = [
   { id: 4, label: "Review" },
 ];
 
+/** Step content transition variants */
+const stepVariants = {
+  enter: (direction: number) => ({
+    x: reduced ? 0 : direction > 0 ? 20 : -20,
+    opacity: 0,
+  }),
+  center: {
+    x: 0,
+    opacity: 1,
+    transition: {
+      duration: 0.3,
+      ease: [0.25, 1, 0.5, 1] as const,
+    },
+  },
+  exit: (direction: number) => ({
+    x: reduced ? 0 : direction > 0 ? -20 : 20,
+    opacity: 0,
+    transition: {
+      duration: 0.2,
+      ease: [0.65, 0, 0.35, 1] as const,
+    },
+  }),
+};
+
 export default function Checkout() {
   const [currentStep, setCurrentStep] = useState(1);
+  const [direction, setDirection] = useState(1);
   const [isProcessing, setIsProcessing] = useState(false);
   const { items, subtotal, shipping, total, clearCart } = useCart();
   const { addOrder } = useOrders();
@@ -41,11 +69,17 @@ export default function Checkout() {
   };
 
   const handleNext = () => {
-    if (currentStep < 4) setCurrentStep(currentStep + 1);
+    if (currentStep < 4) {
+      setDirection(1);
+      setCurrentStep(currentStep + 1);
+    }
   };
 
   const handleBack = () => {
-    if (currentStep > 1) setCurrentStep(currentStep - 1);
+    if (currentStep > 1) {
+      setDirection(-1);
+      setCurrentStep(currentStep - 1);
+    }
   };
 
   const handlePlaceOrder = async () => {
@@ -57,7 +91,7 @@ export default function Checkout() {
   };
 
   const inputClass =
-    "w-full h-11 px-4 bg-background border border-border/50 rounded-xl text-[13px] text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-border transition-colors";
+    "w-full h-11 px-4 bg-background border border-border/50 rounded-xl text-[13px] text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-foreground/40 focus:ring-2 focus:ring-foreground/5 transition-all duration-200";
 
   return (
     <div className="min-h-screen pt-20 pb-20">
@@ -68,9 +102,13 @@ export default function Checkout() {
             {steps.map((step, i) => (
               <div key={step.id} className="flex items-center">
                 <div className="flex items-center gap-2">
-                  <div
+                  <motion.div
+                    animate={{
+                      scale: currentStep === step.id ? 1.05 : 1,
+                    }}
+                    transition={{ duration: 0.2, ease: [0.25, 1, 0.5, 1] }}
                     className={cn(
-                      "flex items-center justify-center w-8 h-8 rounded-full text-[11px] font-semibold transition-colors",
+                      "flex items-center justify-center w-8 h-8 rounded-full text-[11px] font-semibold transition-colors duration-200",
                       currentStep > step.id
                         ? "bg-foreground text-background"
                         : currentStep === step.id
@@ -83,10 +121,10 @@ export default function Checkout() {
                     ) : (
                       step.id
                     )}
-                  </div>
+                  </motion.div>
                   <span
                     className={cn(
-                      "text-[13px] hidden sm:block",
+                      "text-[13px] hidden sm:block transition-colors duration-200",
                       currentStep >= step.id
                         ? "text-foreground font-medium"
                         : "text-muted-foreground/50"
@@ -106,13 +144,14 @@ export default function Checkout() {
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
           {/* Form */}
           <div className="lg:col-span-3">
-            <AnimatePresence mode="wait">
+            <AnimatePresence mode="wait" custom={direction}>
               <motion.div
                 key={currentStep}
-                initial={{ opacity: 0, x: 16 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -16 }}
-                transition={{ duration: 0.2 }}
+                custom={direction}
+                variants={stepVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
               >
                 {currentStep === 1 && (
                   <div className="space-y-5">
@@ -170,7 +209,9 @@ export default function Checkout() {
                         type="text"
                         placeholder="State"
                         value={form.state}
-                        onChange={(e) => updateForm("state", e.target.value)}
+                        onChange={(e) =>
+                          updateForm("state", e.target.value)
+                        }
                         className={inputClass}
                       />
                       <input
@@ -201,8 +242,7 @@ export default function Checkout() {
                         id: "standard",
                         label: "Standard Shipping",
                         time: "5–7 business days",
-                        price:
-                          shipping === 0 ? "Free" : "$12.00",
+                        price: shipping === 0 ? "Free" : "$12.00",
                       },
                       {
                         id: "express",
@@ -229,14 +269,22 @@ export default function Checkout() {
                         <div className="flex items-center gap-3">
                           <div
                             className={cn(
-                              "w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors",
+                              "w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors duration-200",
                               form.shippingMethod === method.id
                                 ? "border-foreground"
                                 : "border-border/50"
                             )}
                           >
                             {form.shippingMethod === method.id && (
-                              <div className="w-2.5 h-2.5 rounded-full bg-foreground" />
+                              <motion.div
+                                initial={reduced ? false : { scale: 0 }}
+                                animate={{ scale: 1 }}
+                                transition={{
+                                  duration: 0.2,
+                                  ease: [0.25, 1, 0.5, 1],
+                                }}
+                                className="w-2.5 h-2.5 rounded-full bg-foreground"
+                              />
                             )}
                           </div>
                           <div>
@@ -382,20 +430,24 @@ export default function Checkout() {
                 <div />
               )}
               {currentStep < 4 ? (
-                <button
+                <motion.button
                   onClick={handleNext}
+                  whileHover={reduced ? undefined : { scale: 1.01 }}
+                  whileTap={reduced ? undefined : { scale: 0.98 }}
                   className="px-8 py-3 bg-foreground text-background text-[13px] font-semibold rounded-xl hover:bg-foreground/90 transition-colors tracking-wide"
                 >
                   Continue
-                </button>
+                </motion.button>
               ) : (
-                <button
+                <motion.button
                   onClick={handlePlaceOrder}
                   disabled={isProcessing}
+                  whileHover={reduced ? undefined : { scale: 1.01 }}
+                  whileTap={reduced ? undefined : { scale: 0.98 }}
                   className="px-8 py-3 bg-foreground text-background text-[13px] font-semibold rounded-xl hover:bg-foreground/90 transition-colors disabled:opacity-50 tracking-wide"
                 >
                   {isProcessing ? "Processing..." : "Place Order"}
-                </button>
+                </motion.button>
               )}
             </div>
           </div>
@@ -449,8 +501,7 @@ export default function Checkout() {
                   <span
                     className={cn(
                       "text-foreground/90",
-                      shipping === 0 &&
-                        "text-green-600 dark:text-green-400"
+                      shipping === 0 && "text-green-600 dark:text-green-400"
                     )}
                   >
                     {shipping === 0

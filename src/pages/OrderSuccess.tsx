@@ -1,7 +1,14 @@
 import { Link, useParams } from "react-router";
 import { motion } from "framer-motion";
-import { Check, Package, ArrowRight } from "lucide-react";
+import { Package, ArrowRight } from "lucide-react";
 import { useOrders } from "@/contexts/OrdersContext";
+import {
+  prefersReducedMotion,
+  staggerContainer,
+  staggerChild,
+} from "@/lib/motion";
+
+const reduced = prefersReducedMotion();
 
 export default function OrderSuccess() {
   const { id } = useParams<{ id: string }>();
@@ -11,39 +18,78 @@ export default function OrderSuccess() {
   return (
     <div className="min-h-screen pt-20 pb-20 flex items-center justify-center">
       <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
+        initial={reduced ? false : "hidden"}
+        animate="visible"
+        variants={staggerContainer(0.12)}
         className="max-w-md mx-auto text-center px-4"
       >
-        {/* Success animation */}
+        {/* SVG Checkmark with stroke animation */}
         <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{
-            type: "spring",
-            damping: 15,
-            stiffness: 200,
-            delay: 0.15,
-          }}
-          className="w-20 h-20 mx-auto mb-8 rounded-full bg-foreground flex items-center justify-center shadow-lg shadow-foreground/15"
+          variants={staggerChild}
+          className="w-20 h-20 mx-auto mb-8"
         >
-          <Check className="h-8 w-8 text-background" strokeWidth={2.5} />
+          <svg
+            viewBox="0 0 80 80"
+            className="w-full h-full"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <motion.circle
+              cx="40"
+              cy="40"
+              r="36"
+              stroke="currentColor"
+              strokeWidth="2"
+              className="text-foreground"
+              initial={reduced ? false : { pathLength: 0, opacity: 0 }}
+              animate={{ pathLength: 1, opacity: 1 }}
+              transition={
+                reduced
+                  ? {}
+                  : {
+                      pathLength: {
+                        duration: 0.6,
+                        delay: 0.2,
+                        ease: [0.25, 1, 0.5, 1],
+                      },
+                      opacity: { duration: 0.2 },
+                    }
+              }
+            />
+            <motion.path
+              d="M24 40 L35 51 L56 30"
+              stroke="currentColor"
+              strokeWidth="3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="text-foreground"
+              initial={reduced ? false : { pathLength: 0, opacity: 0 }}
+              animate={{ pathLength: 1, opacity: 1 }}
+              transition={
+                reduced
+                  ? {}
+                  : {
+                      pathLength: {
+                        duration: 0.4,
+                        delay: 0.6,
+                        ease: [0.25, 1, 0.5, 1],
+                      },
+                      opacity: { duration: 0.1, delay: 0.6 },
+                    }
+              }
+            />
+          </svg>
         </motion.div>
 
         <motion.h1
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.35 }}
+          variants={staggerChild}
           className="text-3xl font-serif font-semibold text-foreground mb-3"
         >
           Order Confirmed!
         </motion.h1>
 
         <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.45 }}
+          variants={staggerChild}
           className="text-[14px] text-muted-foreground/60 mb-2 font-light"
         >
           Thank you for your purchase.
@@ -51,9 +97,7 @@ export default function OrderSuccess() {
 
         {order && (
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.55 }}
+            variants={staggerChild}
             className="bg-card/50 border border-border/30 rounded-2xl p-6 my-8 text-left"
           >
             <div className="flex items-center gap-2.5 mb-4">
@@ -83,14 +127,12 @@ export default function OrderSuccess() {
         )}
 
         <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.65 }}
+          variants={staggerChild}
           className="flex flex-col gap-3 mt-6"
         >
           <Link
             to="/orders"
-            className="inline-flex items-center justify-center gap-2.5 px-8 py-3.5 bg-foreground text-background text-[13px] font-semibold rounded-full hover:bg-foreground/90 transition-colors tracking-wide"
+            className="inline-flex items-center justify-center gap-2.5 px-8 py-3.5 bg-foreground text-background text-[13px] font-semibold rounded-full hover:bg-foreground/90 active:scale-[0.98] transition-all duration-200 tracking-wide"
           >
             View My Orders
             <ArrowRight className="h-4 w-4" />

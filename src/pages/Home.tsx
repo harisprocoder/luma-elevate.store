@@ -3,19 +3,16 @@ import { motion } from "framer-motion";
 import { ArrowRight, Truck, RotateCcw, Shield, Star } from "lucide-react";
 import { ProductCard } from "@/components/ProductCard";
 import { categories, getNewArrivals, getBestsellers } from "@/data/products";
+import {
+  prefersReducedMotion,
+  staggerContainer,
+  staggerChild,
+  heroEntrance,
+  heroChild,
+  fadeUp,
+} from "@/lib/motion";
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 24 },
-  visible: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.5, delay: i * 0.08, ease: [0.25, 0.46, 0.45, 0.94] as const },
-  }),
-};
-
-const stagger = {
-  visible: { transition: { staggerChildren: 0.08 } },
-};
+const reduced = prefersReducedMotion();
 
 export default function Home() {
   const newArrivals = getNewArrivals();
@@ -44,54 +41,49 @@ export default function Home() {
 
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-32">
           <div className="max-w-3xl">
-            <motion.p
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.15 }}
-              className="text-[11px] uppercase tracking-[0.35em] text-muted-foreground/70 mb-7 font-medium"
-            >
-              New Season Collection
-            </motion.p>
-            <motion.h1
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.25 }}
-              className="text-5xl sm:text-6xl lg:text-[5.25rem] font-serif font-bold text-foreground leading-[1.02] mb-7 tracking-[-0.02em]"
-            >
-              Essentials,
-              <br />
-              <span className="italic text-muted-foreground/50 font-normal">
-                elevated.
-              </span>
-            </motion.h1>
-            <motion.p
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-              className="text-[15px] text-muted-foreground/80 max-w-md mb-11 leading-relaxed font-light"
-            >
-              Thoughtfully crafted essentials that balance refined aesthetics
-              with everyday comfort. Built to last, designed to endure.
-            </motion.p>
             <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.5 }}
-              className="flex flex-wrap gap-3"
+              initial={reduced ? false : "hidden"}
+              animate="visible"
+              variants={heroEntrance}
             >
-              <Link
-                to="/shop"
-                className="inline-flex items-center gap-2.5 px-8 py-3.5 bg-foreground text-background text-[13px] font-semibold rounded-full hover:bg-foreground/90 transition-all duration-200 hover:shadow-lg hover:shadow-foreground/15 tracking-wide"
+              <motion.p
+                variants={heroChild}
+                className="text-[11px] uppercase tracking-[0.35em] text-muted-foreground/70 mb-7 font-medium"
               >
-                Shop Collection
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-              <Link
-                to="/shop?category=new-arrivals"
-                className="inline-flex items-center gap-2.5 px-8 py-3.5 border border-border/80 text-foreground text-[13px] font-medium rounded-full hover:bg-muted/40 transition-all duration-200 tracking-wide"
+                New Season Collection
+              </motion.p>
+              <motion.h1
+                variants={heroChild}
+                className="text-5xl sm:text-6xl lg:text-[5.25rem] font-serif font-bold text-foreground leading-[1.02] mb-7 tracking-[-0.02em]"
               >
-                Explore New Arrivals
-              </Link>
+                Essentials,
+                <br />
+                <span className="italic text-muted-foreground/50 font-normal">
+                  elevated.
+                </span>
+              </motion.h1>
+              <motion.p
+                variants={heroChild}
+                className="text-[15px] text-muted-foreground/80 max-w-md mb-11 leading-relaxed font-light"
+              >
+                Thoughtfully crafted essentials that balance refined aesthetics
+                with everyday comfort. Built to last, designed to endure.
+              </motion.p>
+              <motion.div variants={heroChild} className="flex flex-wrap gap-3">
+                <Link
+                  to="/shop"
+                  className="inline-flex items-center gap-2.5 px-8 py-3.5 bg-foreground text-background text-[13px] font-semibold rounded-full hover:bg-foreground/90 active:scale-[0.98] transition-all duration-200 hover:shadow-lg hover:shadow-foreground/15 tracking-wide"
+                >
+                  Shop Collection
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+                <Link
+                  to="/shop?category=new-arrivals"
+                  className="inline-flex items-center gap-2.5 px-8 py-3.5 border border-border/80 text-foreground text-[13px] font-medium rounded-full hover:bg-muted/40 active:scale-[0.98] transition-all duration-200 tracking-wide"
+                >
+                  Explore New Arrivals
+                </Link>
+              </motion.div>
             </motion.div>
           </div>
         </div>
@@ -100,20 +92,22 @@ export default function Home() {
       {/* ─── Trust Row ─────────────────────────────────────────────────── */}
       <section className="border-y border-border/60 bg-card/40">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-border/60">
+          <motion.div
+            initial={reduced ? false : "hidden"}
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+            variants={staggerContainer(0.08)}
+            className="grid grid-cols-2 md:grid-cols-4 divide-x divide-border/60"
+          >
             {[
               { icon: Truck, label: "Free Shipping", desc: "On orders over $100" },
               { icon: RotateCcw, label: "Easy Returns", desc: "30-day free returns" },
               { icon: Shield, label: "Secure Checkout", desc: "100% encrypted payment" },
               { icon: Star, label: "Premium Quality", desc: "Curated with care" },
-            ].map(({ icon: Icon, label, desc }, i) => (
+            ].map(({ icon: Icon, label, desc }) => (
               <motion.div
                 key={label}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                custom={i}
-                variants={fadeUp}
+                variants={staggerChild}
                 className="flex items-center gap-3.5 py-5 px-4 md:px-6"
               >
                 <div className="flex items-center justify-center w-9 h-9 rounded-full bg-muted/60 flex-shrink-0">
@@ -127,7 +121,7 @@ export default function Home() {
                 </div>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -135,11 +129,10 @@ export default function Home() {
       <section className="py-20 lg:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div
-            initial="hidden"
+            initial={reduced ? false : "hidden"}
             whileInView="visible"
-            viewport={{ once: true }}
+            viewport={{ once: true, amount: 0.2 }}
             variants={fadeUp}
-            custom={0}
             className="flex items-end justify-between mb-10"
           >
             <div>
@@ -159,14 +152,14 @@ export default function Home() {
           </motion.div>
 
           <motion.div
-            initial="hidden"
+            initial={reduced ? false : "hidden"}
             whileInView="visible"
-            viewport={{ once: true }}
-            variants={stagger}
+            viewport={{ once: true, amount: 0.15 }}
+            variants={staggerContainer(0.06)}
             className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5"
           >
-            {displayCategories.map((cat, i) => (
-              <motion.div key={cat.id} variants={fadeUp} custom={i + 1}>
+            {displayCategories.map((cat) => (
+              <motion.div key={cat.id} variants={staggerChild}>
                 <Link
                   to={`/shop?category=${cat.slug}`}
                   className="group block relative aspect-[4/5] rounded-2xl overflow-hidden bg-card border border-border/40 shadow-sm hover:shadow-lg hover:shadow-black/15 transition-all duration-500"
@@ -202,11 +195,10 @@ export default function Home() {
       <section className="py-20 lg:py-28 bg-card/20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div
-            initial="hidden"
+            initial={reduced ? false : "hidden"}
             whileInView="visible"
-            viewport={{ once: true }}
+            viewport={{ once: true, amount: 0.2 }}
             variants={fadeUp}
-            custom={0}
             className="flex items-end justify-between mb-10"
           >
             <div>
@@ -226,14 +218,14 @@ export default function Home() {
           </motion.div>
 
           <motion.div
-            initial="hidden"
+            initial={reduced ? false : "hidden"}
             whileInView="visible"
-            viewport={{ once: true }}
-            variants={stagger}
+            viewport={{ once: true, amount: 0.1 }}
+            variants={staggerContainer(0.05)}
             className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6"
           >
-            {newArrivals.map((product, i) => (
-              <motion.div key={product.id} variants={fadeUp} custom={i + 1}>
+            {newArrivals.map((product) => (
+              <motion.div key={product.id} variants={staggerChild}>
                 <ProductCard product={product} />
               </motion.div>
             ))}
@@ -245,11 +237,10 @@ export default function Home() {
       <section className="py-20 lg:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div
-            initial="hidden"
+            initial={reduced ? false : "hidden"}
             whileInView="visible"
-            viewport={{ once: true }}
+            viewport={{ once: true, amount: 0.2 }}
             variants={fadeUp}
-            custom={0}
             className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-[#1a1816] via-[#24201c] to-[#1a1816] border border-border/30 p-10 sm:p-16 lg:p-20"
           >
             {/* Ambient glow */}
@@ -277,7 +268,7 @@ export default function Home() {
               </p>
               <Link
                 to="/shop?category=new-arrivals"
-                className="inline-flex items-center gap-2.5 px-8 py-3.5 bg-foreground text-background text-[13px] font-semibold rounded-full hover:bg-foreground/90 transition-all duration-200 hover:shadow-lg hover:shadow-foreground/15 tracking-wide"
+                className="inline-flex items-center gap-2.5 px-8 py-3.5 bg-foreground text-background text-[13px] font-semibold rounded-full hover:bg-foreground/90 active:scale-[0.98] transition-all duration-200 hover:shadow-lg hover:shadow-foreground/15 tracking-wide"
               >
                 Shop Now
                 <ArrowRight className="h-4 w-4" />
@@ -291,11 +282,10 @@ export default function Home() {
       <section className="py-20 lg:py-28 bg-card/20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div
-            initial="hidden"
+            initial={reduced ? false : "hidden"}
             whileInView="visible"
-            viewport={{ once: true }}
+            viewport={{ once: true, amount: 0.2 }}
             variants={fadeUp}
-            custom={0}
             className="flex items-end justify-between mb-10"
           >
             <div>
@@ -315,14 +305,14 @@ export default function Home() {
           </motion.div>
 
           <motion.div
-            initial="hidden"
+            initial={reduced ? false : "hidden"}
             whileInView="visible"
-            viewport={{ once: true }}
-            variants={stagger}
+            viewport={{ once: true, amount: 0.1 }}
+            variants={staggerContainer(0.05)}
             className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6"
           >
-            {bestsellers.map((product, i) => (
-              <motion.div key={product.id} variants={fadeUp} custom={i + 1}>
+            {bestsellers.map((product) => (
+              <motion.div key={product.id} variants={staggerChild}>
                 <ProductCard product={product} />
               </motion.div>
             ))}

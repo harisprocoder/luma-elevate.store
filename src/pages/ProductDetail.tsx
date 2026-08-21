@@ -1,6 +1,6 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useCallback } from "react";
 import { useParams, Link } from "react-router";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Heart,
   ShoppingBag,
@@ -17,6 +17,16 @@ import { useCart } from "@/contexts/CartContext";
 import { useWishlist } from "@/contexts/WishlistContext";
 import { ProductCard } from "@/components/ProductCard";
 import { cn } from "@/lib/utils";
+import {
+  prefersReducedMotion,
+  staggerContainer,
+  staggerChild,
+  fadeLeft,
+  fadeRight,
+  accordionContent,
+} from "@/lib/motion";
+
+const reduced = prefersReducedMotion();
 
 export default function ProductDetail() {
   const { id } = useParams<{ id: string }>();
@@ -26,8 +36,12 @@ export default function ProductDetail() {
 
   const [selectedColor, setSelectedColor] = useState(0);
   const [selectedSize, setSelectedSize] = useState(0);
+  const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [activeAccordion, setActiveAccordion] = useState<string | null>(null);
+  const [isZoomed, setIsZoomed] = useState(false);
+  const [zoomPos, setZoomPos] = useState({ x: 50, y: 50 });
+  const imageRef = useRef<HTMLDivElement>(null);
 
   const inWishlist = product ? isInWishlist(product.id) : false;
 
@@ -37,6 +51,17 @@ export default function ProductDetail() {
       .filter((p) => p.category === product.category && p.id !== product.id)
       .slice(0, 4);
   }, [product]);
+
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      if (!imageRef.current || reduced) return;
+      const rect = imageRef.current.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+      setZoomPos({ x, y });
+    },
+    [reduced]
+  );
 
   if (!product) {
     return (
@@ -63,7 +88,7 @@ export default function ProductDetail() {
         name: product.name,
         brand: product.brand,
         price: product.price,
-        image: product.images[0],
+        image: product.images[selectedImage],
         color: product.colors[selectedColor]?.name || "",
         size: product.sizes[selectedSize] || "",
       });
@@ -97,18 +122,17 @@ export default function ProductDetail() {
     <div className="min-h-screen pt-20 pb-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-[11px] text-muted-foreground/60 mb-8 tracking-wide">
-          <Link
-            to="/"
-            className="hover:text-foreground transition-colors"
-          >
+        <motion.nav
+          initial={reduced ? false : { opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.4, delay: 0.1 }}
+          className="flex items-center gap-2 text-[11px] text-muted-foreground/60 mb-8 tracking-wide"
+        >
+          <Link to="/" className="hover:text-foreground transition-colors">
             Home
           </Link>
           <span className="text-muted-foreground/30">/</span>
-          <Link
-            to="/shop"
-            className="hover:text-foreground transition-colors"
-          >
+          <Link to="/shop" className="hover:text-foreground transition-colors">
             Shop
           </Link>
           <span className="text-muted-foreground/30">/</span>
@@ -120,37 +144,92 @@ export default function ProductDetail() {
           </Link>
           <span className="text-muted-foreground/30">/</span>
           <span className="text-foreground/70">{product.name}</span>
-        </nav>
+        </motion.nav>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
           {/* Gallery */}
           <motion.div
-            initial={{ opacity: 0, x: -16 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.45, ease: "easeOut" }}
+            initial={reduced ? false : "hidden"}
+            animate="visible"
+            variants={fadeLeft}
           >
-            <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-card border border-border/30 shadow-sm">
-              <img
-                src={product.images[0]}
-                alt={product.name}
-                className="w-full h-full object-cover"
-              />
+            {/* Main Image — with zoom on hover */}
+            <div
+              ref={imageRef}
+              className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-card border border-border/30 shadow-sm cursor-zoom-in"
+              onMouseEnter={() => !reduced && setIsZoomed(true)}
+              onMouseLeave={() => setIsZoomed(false)}
+              onMouseMove={handleMouseMove}
+            >
+              <AnimatePresence mode="wait">
+                <motion.img
+                  key={selectedImage}
+                  src={product.images[selectedImage]}
+                  alt={product.name}
+                  initial={{ opacity: 0 }}
+                  animate={{
+                    opacity: 1,
+                    scale: isZoomed && !reduced ? 1.5 : 1,
+                  }}
+                  exit={{ opacity: 0 }}
+                  transition={{
+                    opacity: { duration: 0.2, ease: [0.25, 1, 0.5, 1] },
+                    scale: { duration: 0.3, ease: [0.25, 1, 0.5, 1] },
+                  }}
+                  className="w-full h-full object-cover"
+                  style={
+                    isZoomed && !reduced
+                      ? {
+                          transformOrigin: `${zoomPos.x}% ${zoomPos.y}%`,
+                        }
+                      : undefined
+                  }
+                />
+              </AnimatePresence>
+
               {product.badge && (
                 <div className="absolute top-4 left-4 px-3 py-1.5 bg-foreground/90 text-background text-[10px] font-semibold uppercase tracking-widest rounded-lg backdrop-blur-sm">
                   {product.badge}
                 </div>
               )}
+
+              {/* Zoom indicator */}
+              {!reduced && (
+                <div
+                  className={cn(
+                    "absolute bottom-4 right-4 p-2 bg-background/70 backdrop-blur-sm rounded-full transition-opacity duration-200",
+                    isZoomed ? "opacity-0" : "opacity-60"
+                  )}
+                >
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    className="text-foreground/70"
+                  >
+                    <circle cx="11" cy="11" r="8" />
+                    <path d="m21 21-4.35-4.35" />
+                    <path d="M11 8v6M8 11h6" />
+                  </svg>
+                </div>
+              )}
             </div>
+
+            {/* Thumbnails — crossfade on click */}
             {product.images.length > 1 && (
               <div className="grid grid-cols-4 gap-3 mt-4">
                 {product.images.map((img, i) => (
-                  <div
+                  <button
                     key={i}
+                    onClick={() => setSelectedImage(i)}
                     className={cn(
-                      "aspect-square rounded-xl overflow-hidden bg-card border-2 transition-all duration-200 cursor-pointer",
-                      i === 0
+                      "aspect-square rounded-xl overflow-hidden bg-card border-2 transition-all duration-200",
+                      selectedImage === i
                         ? "border-foreground/80"
-                        : "border-border/30 hover:border-foreground/20"
+                        : "border-border/30 hover:border-foreground/20 opacity-60 hover:opacity-100"
                     )}
                   >
                     <img
@@ -158,7 +237,7 @@ export default function ProductDetail() {
                       alt=""
                       className="w-full h-full object-cover"
                     />
-                  </div>
+                  </button>
                 ))}
               </div>
             )}
@@ -166,9 +245,9 @@ export default function ProductDetail() {
 
           {/* Info */}
           <motion.div
-            initial={{ opacity: 0, x: 16 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.45, delay: 0.08, ease: "easeOut" }}
+            initial={reduced ? false : "hidden"}
+            animate="visible"
+            variants={fadeRight}
             className="lg:sticky lg:top-24 lg:self-start"
           >
             <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground/60 mb-2 font-medium">
@@ -289,7 +368,7 @@ export default function ProductDetail() {
               <div className="inline-flex items-center border border-border/50 rounded-xl">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="p-3 text-muted-foreground/60 hover:text-foreground transition-colors"
+                  className="p-3 text-muted-foreground/60 hover:text-foreground transition-colors active:scale-95"
                   disabled={quantity <= 1}
                 >
                   <Minus className="h-4 w-4" />
@@ -299,7 +378,7 @@ export default function ProductDetail() {
                 </span>
                 <button
                   onClick={() => setQuantity(quantity + 1)}
-                  className="p-3 text-muted-foreground/60 hover:text-foreground transition-colors"
+                  className="p-3 text-muted-foreground/60 hover:text-foreground transition-colors active:scale-95"
                 >
                   <Plus className="h-4 w-4" />
                 </button>
@@ -308,15 +387,19 @@ export default function ProductDetail() {
 
             {/* Add to Cart & Wishlist */}
             <div className="flex gap-3 mb-8">
-              <button
+              <motion.button
                 onClick={handleAddToCart}
+                whileHover={reduced ? undefined : { scale: 1.01 }}
+                whileTap={reduced ? undefined : { scale: 0.98 }}
                 className="flex-1 flex items-center justify-center gap-2.5 h-12 bg-foreground text-background text-[13px] font-semibold rounded-xl hover:bg-foreground/90 transition-all duration-200 hover:shadow-lg hover:shadow-foreground/15 tracking-wide"
               >
                 <ShoppingBag className="h-4 w-4" />
                 Add to Cart — ${product.price * quantity}
-              </button>
-              <button
+              </motion.button>
+              <motion.button
                 onClick={() => toggleItem(product.id)}
+                whileHover={reduced ? undefined : { scale: 1.02 }}
+                whileTap={reduced ? undefined : { scale: 0.95 }}
                 className={cn(
                   "h-12 w-12 flex items-center justify-center rounded-xl border transition-all duration-200",
                   inWishlist
@@ -330,7 +413,7 @@ export default function ProductDetail() {
                 <Heart
                   className={cn("h-5 w-5", inWishlist && "fill-current")}
                 />
-              </button>
+              </motion.button>
             </div>
 
             {/* Trust Indicators */}
@@ -344,7 +427,10 @@ export default function ProductDetail() {
                   key={label}
                   className="flex flex-col items-center gap-1.5 py-3.5 bg-card/40 border border-border/30 rounded-xl"
                 >
-                  <Icon className="h-4 w-4 text-muted-foreground/50" strokeWidth={1.5} />
+                  <Icon
+                    className="h-4 w-4 text-muted-foreground/50"
+                    strokeWidth={1.5}
+                  />
                   <span className="text-[10px] text-muted-foreground/60 text-center font-medium">
                     {label}
                   </span>
@@ -352,7 +438,7 @@ export default function ProductDetail() {
               ))}
             </div>
 
-            {/* Accordions */}
+            {/* Accordions — fluid height animation */}
             <div className="border-t border-border/40">
               {accordions.map(({ key, title, content }) => (
                 <div key={key} className="border-b border-border/40">
@@ -361,26 +447,30 @@ export default function ProductDetail() {
                     className="w-full flex items-center justify-between py-4 text-[13px] font-medium text-foreground/90"
                   >
                     {title}
-                    <ChevronDown
-                      className={cn(
-                        "h-4 w-4 text-muted-foreground/50 transition-transform duration-200",
-                        activeAccordion === key && "rotate-180"
-                      )}
-                    />
-                  </button>
-                  {activeAccordion === key && (
                     <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.2 }}
-                      className="pb-4"
+                      animate={{
+                        rotate: activeAccordion === key ? 180 : 0,
+                      }}
+                      transition={{ duration: 0.25, ease: [0.25, 1, 0.5, 1] }}
                     >
-                      <p className="text-[13px] text-muted-foreground/65 leading-relaxed font-light">
-                        {content}
-                      </p>
+                      <ChevronDown className="h-4 w-4 text-muted-foreground/50" />
                     </motion.div>
-                  )}
+                  </button>
+                  <AnimatePresence initial={false}>
+                    {activeAccordion === key && (
+                      <motion.div
+                        initial="closed"
+                        animate="open"
+                        exit="closed"
+                        variants={accordionContent}
+                        className="overflow-hidden"
+                      >
+                        <p className="text-[13px] text-muted-foreground/65 leading-relaxed font-light pb-4">
+                          {content}
+                        </p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               ))}
             </div>
@@ -389,16 +479,27 @@ export default function ProductDetail() {
 
         {/* Related Products */}
         {relatedProducts.length > 0 && (
-          <section className="mt-20 pt-16 border-t border-border/40">
-            <h2 className="text-2xl font-serif font-semibold text-foreground mb-8 tracking-[-0.01em]">
+          <motion.section
+            initial={reduced ? false : "hidden"}
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.1 }}
+            variants={staggerContainer(0.05)}
+            className="mt-20 pt-16 border-t border-border/40"
+          >
+            <motion.h2
+              variants={staggerChild}
+              className="text-2xl font-serif font-semibold text-foreground mb-8 tracking-[-0.01em]"
+            >
               You May Also Like
-            </h2>
+            </motion.h2>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
               {relatedProducts.map((p) => (
-                <ProductCard key={p.id} product={p} />
+                <motion.div key={p.id} variants={staggerChild}>
+                  <ProductCard product={p} />
+                </motion.div>
               ))}
             </div>
-          </section>
+          </motion.section>
         )}
       </div>
     </div>
