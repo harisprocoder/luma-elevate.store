@@ -1,4 +1,4 @@
-// Product Image Mapping — maps each product to its real uploaded image files
+// Product Image Mapping — each product gets its own dedicated real photo
 // When image files are added to public/images/products/, they are used automatically
 // Falls back to SVG-generated images when real images aren't available yet
 
@@ -13,130 +13,129 @@ import {
 } from "@/lib/productImages";
 
 // ─── Real Image Paths ───────────────────────────────────────────────────────
-// These paths reference images in public/images/products/
-// The SmartImage component handles fallback if the file doesn't exist yet
+// Each product has a unique dedicated image file for authentic presentation
 
 const REAL_IMAGES: Record<string, { primary: string; secondary: string }> = {
-  // Footwear
+  // Footwear — each shoe gets its own dedicated photo
   "luma-stride-01": {
-    primary: "/images/products/footwear-1.jpg",
-    secondary: "/images/products/interior-display.jpg",
+    primary: "/images/products/stride-runner.jpg",
+    secondary: "/images/products/cloud-walker.jpg",
   },
   "luma-comfort-runner-01": {
-    primary: "/images/products/footwear-1.jpg",
-    secondary: "/images/products/storefront.jpg",
+    primary: "/images/products/cloud-walker.jpg",
+    secondary: "/images/products/stride-runner.jpg",
   },
   "luma-trail-boot-01": {
-    primary: "/images/products/footwear-1.jpg",
-    secondary: "/images/products/interior-display.jpg",
+    primary: "/images/products/trail-boot.jpg",
+    secondary: "/images/products/mid-sneaker.jpg",
   },
   "luma-mid-sneaker-01": {
-    primary: "/images/products/footwear-1.jpg",
-    secondary: "/images/products/storefront.jpg",
+    primary: "/images/products/mid-sneaker.jpg",
+    secondary: "/images/products/stride-runner.jpg",
   },
 
-  // Hoodies
+  // Hoodies — each style gets its own photo
   "luma-drift-hoodie-01": {
-    primary: "/images/products/hoodie-1.jpg",
-    secondary: "/images/products/fabric-detail.jpg",
+    primary: "/images/products/drift-hoodie.jpg",
+    secondary: "/images/products/heritage-hoodie.jpg",
   },
   "luma-heritage-hoodie-01": {
-    primary: "/images/products/hoodie-1.jpg",
-    secondary: "/images/products/clothing-rack.jpg",
+    primary: "/images/products/heritage-hoodie.jpg",
+    secondary: "/images/products/cozy-hoodie.jpg",
   },
   "luma-cozy-hoodie-01": {
-    primary: "/images/products/hoodie-1.jpg",
-    secondary: "/images/products/fabric-detail.jpg",
+    primary: "/images/products/cozy-hoodie.jpg",
+    secondary: "/images/products/drift-hoodie.jpg",
   },
 
-  // T-Shirts
+  // T-Shirts — each style gets its own photo
   "luma-ess-tee-01": {
-    primary: "/images/products/tshirt-1.jpg",
-    secondary: "/images/products/fabric-detail.jpg",
+    primary: "/images/products/essential-tee.jpg",
+    secondary: "/images/products/signature-tee.jpg",
   },
   "luma-signature-tee-01": {
-    primary: "/images/products/tshirt-1.jpg",
-    secondary: "/images/products/editorial.jpg",
+    primary: "/images/products/signature-tee.jpg",
+    secondary: "/images/products/essential-tee.jpg",
   },
   "luma-minimal-tee-01": {
-    primary: "/images/products/tshirt-1.jpg",
-    secondary: "/images/products/fabric-detail.jpg",
+    primary: "/images/products/minimal-tee.jpg",
+    secondary: "/images/products/formal-tee.jpg",
   },
   "luma-formal-tee-01": {
-    primary: "/images/products/tshirt-1.jpg",
-    secondary: "/images/products/editorial.jpg",
+    primary: "/images/products/formal-tee.jpg",
+    secondary: "/images/products/urban-tee.jpg",
   },
   "luma-urban-tee-01": {
-    primary: "/images/products/tshirt-1.jpg",
-    secondary: "/images/products/fabric-detail.jpg",
+    primary: "/images/products/urban-tee.jpg",
+    secondary: "/images/products/minimal-tee.jpg",
   },
 
-  // Jackets
+  // Jackets — each style gets its own photo
   "luma-shell-jacket-01": {
-    primary: "/images/products/jacket-1.jpg",
-    secondary: "/images/products/fabric-detail.jpg",
+    primary: "/images/products/shell-jacket.jpg",
+    secondary: "/images/products/flight-jacket.jpg",
   },
   "luma-flight-jacket-01": {
-    primary: "/images/products/jacket-1.jpg",
-    secondary: "/images/products/interior-display.jpg",
+    primary: "/images/products/flight-jacket.jpg",
+    secondary: "/images/products/shell-jacket.jpg",
   },
   "luma-wool-overcoat-01": {
-    primary: "/images/products/jacket-1.jpg",
-    secondary: "/images/products/editorial.jpg",
+    primary: "/images/products/wool-overcoat.jpg",
+    secondary: "/images/products/parka.jpg",
   },
   "luma-parka-01": {
-    primary: "/images/products/jacket-1.jpg",
-    secondary: "/images/products/fabric-detail.jpg",
+    primary: "/images/products/parka.jpg",
+    secondary: "/images/products/wool-overcoat.jpg",
   },
 
-  // Bags
+  // Bags — each style gets its own photo
   "luma-arc-tote-01": {
-    primary: "/images/products/bag-1.jpg",
-    secondary: "/images/products/interior-display.jpg",
+    primary: "/images/products/arc-tote.jpg",
+    secondary: "/images/products/weekender.jpg",
   },
   "luma-crossbody-01": {
-    primary: "/images/products/bag-1.jpg",
-    secondary: "/images/products/fabric-detail.jpg",
+    primary: "/images/products/crossbody.jpg",
+    secondary: "/images/products/arc-tote.jpg",
   },
   "luma-weekender-01": {
-    primary: "/images/products/bag-1.jpg",
-    secondary: "/images/products/interior-display.jpg",
+    primary: "/images/products/weekender.jpg",
+    secondary: "/images/products/crossbody.jpg",
   },
   "luma-mini-clutch-01": {
-    primary: "/images/products/bag-1.jpg",
-    secondary: "/images/products/fabric-detail.jpg",
+    primary: "/images/products/mini-clutch.jpg",
+    secondary: "/images/products/arc-tote.jpg",
   },
 
-  // Watches
+  // Watches — each gets its own dedicated watch photo
   "luma-chronos-01": {
-    primary: "/images/products/watch-1.jpg",
-    secondary: "/images/products/interior-display.jpg",
+    primary: "/images/products/chronos-watch.jpg",
+    secondary: "/images/products/gold-watch.jpg",
   },
   "luma-field-watch-01": {
-    primary: "/images/products/watch-1.jpg",
-    secondary: "/images/products/fabric-detail.jpg",
+    primary: "/images/products/field-watch.jpg",
+    secondary: "/images/products/minimal-watch.jpg",
   },
   "luma-minimal-watch-01": {
-    primary: "/images/products/watch-1.jpg",
-    secondary: "/images/products/editorial.jpg",
+    primary: "/images/products/minimal-watch.jpg",
+    secondary: "/images/products/chronos-watch.jpg",
   },
   "luma-diver-watch-01": {
-    primary: "/images/products/watch-1.jpg",
-    secondary: "/images/products/interior-display.jpg",
+    primary: "/images/products/diver-watch.jpg",
+    secondary: "/images/products/field-watch.jpg",
   },
 
-  // Accessories
+  // Accessories — each gets its own photo
   "luma-onyx-sunglass-01": {
-    primary: "/images/products/accessory-1.jpg",
-    secondary: "/images/products/fabric-detail.jpg",
+    primary: "/images/products/onyx-aviator.jpg",
+    secondary: "/images/products/leather-belt.jpg",
   },
   "luma-leather-belt-01": {
-    primary: "/images/products/accessory-1.jpg",
-    secondary: "/images/products/interior-display.jpg",
+    primary: "/images/products/leather-belt.jpg",
+    secondary: "/images/products/slim-wallet.jpg",
   },
   "luma-wallet-01": {
-    primary: "/images/products/accessory-1.jpg",
-    secondary: "/images/products/fabric-detail.jpg",
+    primary: "/images/products/slim-wallet.jpg",
+    secondary: "/images/products/leather-belt.jpg",
   },
 };
 
@@ -270,12 +269,12 @@ const SVG_FALLBACKS: Record<string, { primary: string; secondary: string }> = {
 // ─── Brand Images ───────────────────────────────────────────────────────────
 
 export const brandImages = {
-  heroBackground: "/images/brand/storefront.jpg",
-  heroBackgroundFallback: "/images/brand/storefront.jpg",
-  categoryBackground: "/images/brand/interior.jpg",
-  editorial: "/images/brand/editorial.jpg",
-  giftbox: "/images/brand/giftbox.jpg",
-  clothingRack: "/images/brand/clothing-rack.jpg",
+  heroBackground: "/images/brand/hero-architectural.jpg",
+  heroBackgroundFallback: "/images/brand/hero-architectural.jpg",
+  categoryBackground: "/images/brand/warm-shadow.jpg",
+  editorial: "/images/brand/hero-architectural.jpg",
+  giftbox: "/images/brand/warm-shadow.jpg",
+  clothingRack: "/images/brand/warm-shadow.jpg",
 };
 
 // ─── API ────────────────────────────────────────────────────────────────────

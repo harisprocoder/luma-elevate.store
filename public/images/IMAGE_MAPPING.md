@@ -1,75 +1,85 @@
-# LUMA Product Image Mapping
+# Product Image Mapping — Drop Your Images Here
 
-## Brand Images → `public/images/brand/`
+## How to Use
+1. Rename each downloaded/generated image to match the filename below
+2. Place product images in `public/images/products/`
+3. Place brand images in `public/images/brand/`
+4. The app automatically picks them up — no code changes needed
 
-| Uploaded Image | Filename | Used In |
-|---|---|---|
-| Storefront (dark nighttime exterior) | `storefront.jpg` | Hero section background |
-| Interior store display (shoes on tables) | `interior.jpg` | Category section backgrounds |
-| "Essentials, elevated." card | `editorial.jpg` | Editorial section on Home page |
-| Luxury gift box with LUMA branding | `giftbox.jpg` | Order success page |
-| Clothing rack with t-shirts | `clothing-rack.jpg` | Shop page header |
+---
 
 ## Product Images → `public/images/products/`
 
-### Footwear (dark sneaker photo)
-| Product | Primary Image | Secondary Image |
+### Footwear
+| Filename | Product | Your Image |
 |---|---|---|
-| Stride Minimal Runner | `footwear-1.jpg` | `interior-display.jpg` |
-| Cloud Walk Trainer | `footwear-1.jpg` | `storefront.jpg` |
-| Trail Tech Boot | `footwear-1.jpg` | `interior-display.jpg` |
-| Mid Canvas Sneaker | `footwear-1.jpg` | `storefront.jpg` |
+| `stride-runner.jpg` | Stride Minimal Runner | Grey knit sneaker on dark pedestal |
+| `cloud-walker.jpg` | Cloud Walk Trainer | White low-top leather sneaker |
+| `trail-boot.jpg` | Trail Tech Boot | Brown leather hiking boot |
+| `mid-sneaker.jpg` | Mid Canvas Sneaker | Tan/beige high-top canvas sneaker |
 
-### Hoodies (dark hoodie close-up with tag)
-| Product | Primary Image | Secondary Image |
+### Hoodies
+| Filename | Product | Your Image |
 |---|---|---|
-| Drift French Terry Hoodie | `hoodie-1.jpg` | `fabric-detail.jpg` |
-| Heritage Zip Hoodie | `hoodie-1.jpg` | `clothing-rack.jpg` |
-| Cozy Pullover Hoodie | `hoodie-1.jpg` | `fabric-detail.jpg` |
+| `drift-hoodie.jpg` | Drift French Terry Hoodie | Navy pullover hoodie (back view on mannequin) |
+| `heritage-hoodie.jpg` | Heritage Zip Hoodie | Navy zip-through hoodie (back view) |
+| `cozy-hoodie.jpg` | Cozy Pullover Hoodie | Dark charcoal pullover hoodie (flat lay) |
 
-### T-Shirts (clothing rack with t-shirts)
-| Product | Primary Image | Secondary Image |
+### T-Shirts
+| Filename | Product | Your Image |
 |---|---|---|
-| Essential Crew Tee | `tshirt-1.jpg` | `fabric-detail.jpg` |
-| Signature Logo Tee | `tshirt-1.jpg` | `editorial.jpg` |
-| Studio Minimal Tee | `tshirt-1.jpg` | `fabric-detail.jpg` |
-| Pima V-Neck Tee | `tshirt-1.jpg` | `editorial.jpg` |
-| Urban Graphic Tee | `tshirt-1.jpg` | `fabric-detail.jpg` |
+| `essential-tee.jpg` | Essential Crew Tee | Ivory/cream crew neck tee on hanger |
+| `signature-tee.jpg` | Signature Logo Tee | Olive crew neck tee |
+| `minimal-tee.jpg` | Studio Minimal Tee | Brown/rust crew neck tee (flat lay) |
+| `formal-tee.jpg` | Pima V-Neck Tee | Navy v-neck tee on mannequin |
+| `urban-tee.jpg` | Urban Graphic Tee | Dark grey crew neck tee on mannequin |
 
-### Jackets (interior store display)
-| Product | Primary Image | Secondary Image |
+### Jackets
+| Filename | Product | Your Image |
 |---|---|---|
-| Shell Tech Jacket | `jacket-1.jpg` | `fabric-detail.jpg` |
-| Flight Bomber Jacket | `jacket-1.jpg` | `interior-display.jpg` |
-| Wool Overcoat | `jacket-1.jpg` | `editorial.jpg` |
-| Insulated Parka | `jacket-1.jpg` | `fabric-detail.jpg` |
+| `shell-jacket.jpg` | Shell Tech Jacket | Olive green hooded jacket (back view) |
+| `flight-jacket.jpg` | Flight Bomber Jacket | Navy bomber jacket (back view, satin finish) |
+| `wool-overcoat.jpg` | Wool Overcoat | Charcoal double-breasted overcoat on hanger |
+| `parka.jpg` | Insulated Parka | Navy hooded coat on hanger |
 
-### Bags (luxury gift box)
-| Product | Primary Image | Secondary Image |
+### Bags
+| Filename | Product | Your Image |
 |---|---|---|
-| Arc Leather Tote | `bag-1.jpg` | `interior-display.jpg` |
-| Crossbody Sling | `bag-1.jpg` | `fabric-detail.jpg` |
-| Weekender Duffel | `bag-1.jpg` | `interior-display.jpg` |
-| Mini Leather Clutch | `bag-1.jpg` | `fabric-detail.jpg` |
+| `arc-tote.jpg` | Arc Leather Tote | Tan/cognac leather tote bag |
+| `crossbody.jpg` | Crossbody Sling | Black nylon crossbody bag |
+| `weekender.jpg` | Weekender Duffel | Brown leather duffel bag |
+| `mini-clutch.jpg` | Mini Leather Clutch | Burgundy leather envelope clutch |
 
-### Watches (interior display with shoes)
-| Product | Primary Image | Secondary Image |
+### Watches
+| Filename | Product | Your Image |
 |---|---|---|
-| Chronos Automatic | `watch-1.jpg` | `interior-display.jpg` |
-| Field Explorer Watch | `watch-1.jpg` | `fabric-detail.jpg` |
-| Minimal Dress Watch | `watch-1.jpg` | `editorial.jpg` |
-| Diver Pro Watch | `watch-1.jpg` | `interior-display.jpg` |
+| `chronos-watch.jpg` | Chronos Automatic | Gold/rose gold dress watch with brown leather strap |
+| `field-watch.jpg` | Field Explorer Watch | Explorer watch with blue dial and fabric strap |
+| `minimal-watch.jpg` | Minimal Dress Watch | Black dial dress watch with leather strap |
+| `diver-watch.jpg` | Diver Pro Watch | Blue dial dive watch with steel bracelet |
 
-### Accessories (caps on shelf)
-| Product | Primary Image | Secondary Image |
+### Accessories
+| Filename | Product | Your Image |
 |---|---|---|
-| Onyx Aviator | `accessory-1.jpg` | `fabric-detail.jpg` |
-| Heritage Leather Belt | `accessory-1.jpg` | `interior-display.jpg` |
-| Slim Card Wallet | `accessory-1.jpg` | `fabric-detail.jpg` |
+| `onyx-aviator.jpg` | Onyx Aviator Sunglasses | Aviator sunglasses on black block |
+| `leather-belt.jpg` | Heritage Leather Belt | Brown leather belt with brass buckle |
+| `slim-wallet.jpg` | Slim Card Wallet | Brown leather bifold wallet |
 
-## Quick Setup
+---
 
-1. Rename your uploaded images to match the filenames above
-2. Place brand images in `public/images/brand/`
-3. Place product images in `public/images/products/`
-4. The app will automatically use them — no code changes needed
+## Brand Images → `public/images/brand/`
+
+| Filename | Usage | Your Image |
+|---|---|---|
+| `hero-architectural.jpg` | Hero section background, editorial sections | Dark architectural wall with warm orange light beam |
+| `warm-shadow.jpg` | Category backgrounds, secondary brand imagery | Tan wall with diagonal shadows and light |
+
+---
+
+## Total: 27 product images + 2 brand images = 29 files
+
+Once all files are placed, every product will show its real photograph with:
+- Shimmer loading skeleton while loading
+- Automatic fallback to SVG if a file is missing
+- Smooth zoom on hover
+- Secondary image crossfade on hover
