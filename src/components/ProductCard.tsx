@@ -6,6 +6,8 @@ import { cn } from "@/lib/utils";
 import { useWishlist } from "@/contexts/WishlistContext";
 import { useCart } from "@/contexts/CartContext";
 import { prefersReducedMotion } from "@/lib/motion";
+import { getRealImages, getSVGFallbacks } from "@/lib/productImageMap";
+import { SmartImage } from "@/components/SmartImage";
 import type { Product } from "@/data/products";
 
 interface ProductCardProps {
@@ -17,14 +19,13 @@ const reduced = prefersReducedMotion();
 
 export function ProductCard({ product, className }: ProductCardProps) {
   const [isHovered, setIsHovered] = useState(false);
-  const [isImageLoaded, setIsImageLoaded] = useState(false);
-  const [isSecondaryLoaded, setIsSecondaryLoaded] = useState(false);
   const { toggleItem, isInWishlist } = useWishlist();
   const { addItem } = useCart();
   const inWishlist = isInWishlist(product.id);
 
-  const hasSecondaryImage = product.images.length > 1;
-  const useSecondaryOnHover = hasSecondaryImage && isHovered && isSecondaryLoaded;
+  const realImages = getRealImages(product.id);
+  const svgFallbacks = getSVGFallbacks(product.id);
+  const hasSecondaryImage = realImages?.secondary || svgFallbacks?.secondary;
 
   const badgeLabel =
     product.badge === "new"
@@ -56,36 +57,26 @@ export function ProductCard({ product, className }: ProductCardProps) {
       <Link to={`/product/${product.id}`} className="block">
         <div className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-card border border-border/40 shadow-sm group-hover:shadow-xl group-hover:shadow-black/20 transition-shadow duration-500">
           {/* Primary Image */}
-          <img
-            src={product.images[0]}
+          <SmartImage
+            src={realImages?.primary ?? product.images[0]}
+            fallbackSrc={svgFallbacks?.primary}
             alt={product.name}
-            className={cn(
-              "w-full h-full object-cover transition-all duration-700 ease-out",
-              "group-hover:scale-[1.03]",
-              useSecondaryOnHover ? "opacity-0 scale-105" : "opacity-100"
-            )}
-            loading="lazy"
-            onLoad={() => setIsImageLoaded(true)}
+            className="absolute inset-0 w-full h-full"
+            enableZoom
           />
 
           {/* Secondary Image — revealed on hover */}
           {hasSecondaryImage && (
-            <img
-              src={product.images[1]}
+            <SmartImage
+              src={realImages?.secondary ?? (svgFallbacks?.secondary ?? product.images[1] ?? "")}
+              fallbackSrc={svgFallbacks?.secondary}
               alt={`${product.name} alternate view`}
               className={cn(
-                "absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-out",
-                "group-hover:scale-[1.03]",
-                useSecondaryOnHover ? "opacity-100" : "opacity-0 scale-105"
+                "absolute inset-0 w-full h-full transition-opacity duration-700",
+                isHovered ? "opacity-100" : "opacity-0"
               )}
-              loading="lazy"
-              onLoad={() => setIsSecondaryLoaded(true)}
+              enableZoom
             />
-          )}
-
-          {/* Loading skeleton */}
-          {!isImageLoaded && (
-            <div className="absolute inset-0 shimmer bg-card" />
           )}
 
           {/* Subtle gradient overlay on hover */}
@@ -98,7 +89,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
           {badgeLabel && (
             <div
               className={cn(
-                "absolute top-3 left-3 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-widest rounded-md backdrop-blur-sm",
+                "absolute top-3 left-3 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-widest rounded-md backdrop-blur-sm z-20",
                 badgeStyle
               )}
             >
@@ -114,7 +105,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
               toggleItem(product.id);
             }}
             className={cn(
-              "absolute top-3 right-3 p-2 rounded-full transition-shadow duration-300",
+              "absolute top-3 right-3 p-2 rounded-full z-20 transition-shadow duration-300",
               inWishlist
                 ? "bg-foreground text-background shadow-md"
                 : "bg-background/70 backdrop-blur-md text-foreground/70 hover:bg-background/90"
@@ -132,7 +123,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
 
           {/* Hover Actions — slide up */}
           <motion.div
-            className="absolute bottom-3 left-3 right-3 flex gap-2"
+            className="absolute bottom-3 left-3 right-3 flex gap-2 z-20"
             initial={false}
             animate={{
               opacity: isHovered ? 1 : 0,
@@ -149,7 +140,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
                   name: product.name,
                   brand: product.brand,
                   price: product.price,
-                  image: product.images[0],
+                  image: realImages?.primary ?? product.images[0],
                   color: product.colors[0]?.name || "",
                   size: product.sizes[0] || "",
                 });

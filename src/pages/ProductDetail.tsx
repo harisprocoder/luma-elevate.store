@@ -16,6 +16,8 @@ import { getProductById, products } from "@/data/products";
 import { useCart } from "@/contexts/CartContext";
 import { useWishlist } from "@/contexts/WishlistContext";
 import { ProductCard } from "@/components/ProductCard";
+import { SmartImage } from "@/components/SmartImage";
+import { getRealImages, getSVGFallbacks } from "@/lib/productImageMap";
 import { cn } from "@/lib/utils";
 import {
   prefersReducedMotion,
@@ -44,6 +46,17 @@ export default function ProductDetail() {
   const imageRef = useRef<HTMLDivElement>(null);
 
   const inWishlist = product ? isInWishlist(product.id) : false;
+
+  const realImages = product ? getRealImages(product.id) : null;
+  const svgFallbacks = product ? getSVGFallbacks(product.id) : null;
+  const productImages = product ? [
+    realImages?.primary ?? product.images[0],
+    realImages?.secondary ?? product.images[1] ?? product.images[0],
+  ] : [];
+  const productSVGFallbacks = svgFallbacks ? [
+    svgFallbacks.primary,
+    svgFallbacks.secondary,
+  ] : [];
 
   const relatedProducts = useMemo(() => {
     if (!product) return [];
@@ -88,7 +101,7 @@ export default function ProductDetail() {
         name: product.name,
         brand: product.brand,
         price: product.price,
-        image: product.images[selectedImage],
+        image: productImages[selectedImage],
         color: product.colors[selectedColor]?.name || "",
         size: product.sizes[selectedSize] || "",
       });
@@ -162,29 +175,30 @@ export default function ProductDetail() {
               onMouseMove={handleMouseMove}
             >
               <AnimatePresence mode="wait">
-                <motion.img
+                <motion.div
                   key={selectedImage}
-                  src={product.images[selectedImage]}
-                  alt={product.name}
                   initial={{ opacity: 0 }}
-                  animate={{
-                    opacity: 1,
-                    scale: isZoomed && !reduced ? 1.5 : 1,
-                  }}
+                  animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  transition={{
-                    opacity: { duration: 0.2, ease: [0.25, 1, 0.5, 1] },
-                    scale: { duration: 0.3, ease: [0.25, 1, 0.5, 1] },
-                  }}
-                  className="w-full h-full object-cover"
+                  transition={{ duration: 0.2, ease: [0.25, 1, 0.5, 1] }}
+                  className="w-full h-full"
                   style={
                     isZoomed && !reduced
                       ? {
                           transformOrigin: `${zoomPos.x}% ${zoomPos.y}%`,
+                          transform: `scale(1.5)`,
+                          transition: "transform 0.3s cubic-bezier(0.25, 1, 0.5, 1)",
                         }
                       : undefined
                   }
-                />
+                >
+                  <SmartImage
+                    src={productImages[selectedImage]}
+                    fallbackSrc={productSVGFallbacks[selectedImage]}
+                    alt={product.name}
+                    className="w-full h-full"
+                  />
+                </motion.div>
               </AnimatePresence>
 
               {product.badge && (
@@ -218,10 +232,8 @@ export default function ProductDetail() {
               )}
             </div>
 
-            {/* Thumbnails — crossfade on click */}
-            {product.images.length > 1 && (
-              <div className="grid grid-cols-4 gap-3 mt-4">
-                {product.images.map((img, i) => (
+            {/* Thumbnails — crossfade on click */}              <div className="grid grid-cols-4 gap-3 mt-4">
+                {productImages.map((img, i) => (
                   <button
                     key={i}
                     onClick={() => setSelectedImage(i)}
@@ -232,15 +244,15 @@ export default function ProductDetail() {
                         : "border-border/30 hover:border-foreground/20 opacity-60 hover:opacity-100"
                     )}
                   >
-                    <img
+                    <SmartImage
                       src={img}
+                      fallbackSrc={productSVGFallbacks[i]}
                       alt=""
-                      className="w-full h-full object-cover"
+                      className="w-full h-full"
                     />
                   </button>
                 ))}
               </div>
-            )}
           </motion.div>
 
           {/* Info */}
