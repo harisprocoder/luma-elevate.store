@@ -17,9 +17,14 @@ const reduced = prefersReducedMotion();
 
 export function ProductCard({ product, className }: ProductCardProps) {
   const [isHovered, setIsHovered] = useState(false);
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
+  const [isSecondaryLoaded, setIsSecondaryLoaded] = useState(false);
   const { toggleItem, isInWishlist } = useWishlist();
   const { addItem } = useCart();
   const inWishlist = isInWishlist(product.id);
+
+  const hasSecondaryImage = product.images.length > 1;
+  const useSecondaryOnHover = hasSecondaryImage && isHovered && isSecondaryLoaded;
 
   const badgeLabel =
     product.badge === "new"
@@ -50,15 +55,44 @@ export function ProductCard({ product, className }: ProductCardProps) {
       {/* Image */}
       <Link to={`/product/${product.id}`} className="block">
         <div className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-card border border-border/40 shadow-sm group-hover:shadow-xl group-hover:shadow-black/20 transition-shadow duration-500">
+          {/* Primary Image */}
           <img
             src={product.images[0]}
             alt={product.name}
-            className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+            className={cn(
+              "w-full h-full object-cover transition-all duration-700 ease-out",
+              "group-hover:scale-[1.03]",
+              useSecondaryOnHover ? "opacity-0 scale-105" : "opacity-100"
+            )}
             loading="lazy"
+            onLoad={() => setIsImageLoaded(true)}
           />
 
+          {/* Secondary Image — revealed on hover */}
+          {hasSecondaryImage && (
+            <img
+              src={product.images[1]}
+              alt={`${product.name} alternate view`}
+              className={cn(
+                "absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-out",
+                "group-hover:scale-[1.03]",
+                useSecondaryOnHover ? "opacity-100" : "opacity-0 scale-105"
+              )}
+              loading="lazy"
+              onLoad={() => setIsSecondaryLoaded(true)}
+            />
+          )}
+
+          {/* Loading skeleton */}
+          {!isImageLoaded && (
+            <div className="absolute inset-0 shimmer bg-card" />
+          )}
+
           {/* Subtle gradient overlay on hover */}
-          <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400" />
+          <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+          {/* Top gradient for badges */}
+          <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-black/20 to-transparent opacity-60" />
 
           {/* Badge */}
           {badgeLabel && (
@@ -80,17 +114,17 @@ export function ProductCard({ product, className }: ProductCardProps) {
               toggleItem(product.id);
             }}
             className={cn(
-              "absolute top-3 right-3 p-2 rounded-full",
+              "absolute top-3 right-3 p-2 rounded-full transition-shadow duration-300",
               inWishlist
                 ? "bg-foreground text-background shadow-md"
-                : "bg-background/70 backdrop-blur-md text-foreground/70"
+                : "bg-background/70 backdrop-blur-md text-foreground/70 hover:bg-background/90"
             )}
             initial={false}
             animate={{
               opacity: inWishlist || isHovered ? 1 : 0,
               scale: inWishlist ? 1 : isHovered ? 1 : 0.85,
             }}
-            transition={{ duration: reduced ? 0 : 0.2, ease: [0.25, 1, 0.5, 1] }}
+            transition={{ duration: reduced ? 0 : 0.25, ease: [0.25, 1, 0.5, 1] }}
             aria-label={inWishlist ? "Remove from wishlist" : "Add to wishlist"}
           >
             <Heart className={cn("h-4 w-4", inWishlist && "fill-current")} />
@@ -102,9 +136,9 @@ export function ProductCard({ product, className }: ProductCardProps) {
             initial={false}
             animate={{
               opacity: isHovered ? 1 : 0,
-              y: isHovered ? 0 : 10,
+              y: isHovered ? 0 : 12,
             }}
-            transition={{ duration: 0.25, ease: [0.25, 1, 0.5, 1] }}
+            transition={{ duration: 0.3, ease: [0.25, 1, 0.5, 1] }}
           >
             <button
               onClick={(e) => {

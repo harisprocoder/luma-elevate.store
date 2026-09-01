@@ -196,25 +196,43 @@ export function Navbar() {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.2 }}
-              className="md:hidden bg-background/95 backdrop-blur-xl border-b border-border/30"
+              transition={{ duration: 0.3, ease: [0.25, 1, 0.5, 1] }}
+              className="md:hidden bg-background/95 backdrop-blur-xl border-b border-border/30 overflow-hidden"
             >
-              <div className="px-5 py-5 space-y-0.5">
+              <motion.div
+                initial="hidden"
+                animate="visible"
+                variants={{
+                  hidden: { opacity: 1 },
+                  visible: {
+                    opacity: 1,
+                    transition: { staggerChildren: 0.05, delayChildren: 0.1 },
+                  },
+                }}
+                className="px-5 py-5 space-y-0.5"
+              >
                 {navLinks.map((link) => (
-                  <Link
+                  <motion.div
                     key={link.label}
-                    to={link.href}
-                    className={cn(
-                      "block py-3 text-[15px] transition-colors border-b border-border/20 last:border-0",
-                      location.pathname === link.href
-                        ? "text-foreground font-medium"
-                        : "text-muted-foreground/60 hover:text-foreground"
-                    )}
+                    variants={{
+                      hidden: { opacity: 0, x: -12 },
+                      visible: { opacity: 1, x: 0, transition: { duration: 0.3, ease: [0.25, 1, 0.5, 1] } },
+                    }}
                   >
-                    {link.label}
-                  </Link>
+                    <Link
+                      to={link.href}
+                      className={cn(
+                        "block py-3 text-[15px] transition-colors border-b border-border/20 last:border-0",
+                        location.pathname === link.href
+                          ? "text-foreground font-medium"
+                          : "text-muted-foreground/60 hover:text-foreground"
+                      )}
+                    >
+                      {link.label}
+                    </Link>
+                  </motion.div>
                 ))}
-              </div>
+              </motion.div>
             </motion.div>
           )}
         </AnimatePresence>
