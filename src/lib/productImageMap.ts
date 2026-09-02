@@ -109,7 +109,7 @@ const REAL_IMAGES: Record<string, { primary: string; secondary: string }> = {
   // Watches — each gets its own dedicated watch photo
   "luma-chronos-01": {
     primary: "/images/products/chronos-watch.jpg",
-    secondary: "/images/products/gold-watch.jpg",
+    secondary: "/images/products/diver-watch.jpg",
   },
   "luma-field-watch-01": {
     primary: "/images/products/field-watch.jpg",
